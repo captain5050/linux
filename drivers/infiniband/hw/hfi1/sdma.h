@@ -365,6 +365,7 @@ struct sdma_engine {
 	struct list_head flushlist;
 	struct cpumask cpu_mask;
 	struct kobject kobj;
+	struct completion kobj_unregister;
 	u32 msix_intr;
 };
 

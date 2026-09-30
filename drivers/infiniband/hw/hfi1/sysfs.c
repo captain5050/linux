@@ -607,7 +607,16 @@ static const struct sysfs_ops sde_sysfs_ops = {
 	.store = sde_store,
 };
 
+static void sde_kobj_release(struct kobject *kobj)
+{
+	struct sdma_engine *sde =
+		container_of(kobj, struct sdma_engine, kobj);
+
+	complete(&sde->kobj_unregister);
+}
+
 static struct kobj_type sde_ktype = {
+	.release = sde_kobj_release,
 	.sysfs_ops = &sde_sysfs_ops,
 };
 
@@ -657,6 +666,7 @@ int hfi1_verbs_register_sysfs(struct hfi1_devdata *dd)
 	int i, j, ret;
 
 	for (i = 0; i < dd->num_sdma; i++) {
+		init_completion(&dd->per_sdma[i].kobj_unregister);
 		ret = kobject_init_and_add(&dd->per_sdma[i].kobj,
 					   &sde_ktype, &class_dev->kobj,
 					   "sdma%d", i);
@@ -678,8 +688,10 @@ bail:
 	 * has been added successfully. The sysfs files created under the
 	 * kobject directory will also be removed during the process.
 	 */
-	for (; i >= 0; i--)
+	for (; i >= 0; i--) {
 		kobject_put(&dd->per_sdma[i].kobj);
+		wait_for_completion(&dd->per_sdma[i].kobj_unregister);
+	}
 
 	return ret;
 }
@@ -692,6 +704,8 @@ void hfi1_verbs_unregister_sysfs(struct hfi1_devdata *dd)
 	int i;
 
 	/* Unwind operations in hfi1_verbs_register_sysfs() */
-	for (i = 0; i < dd->num_sdma; i++)
+	for (i = 0; i < dd->num_sdma; i++) {
 		kobject_put(&dd->per_sdma[i].kobj);
+		wait_for_completion(&dd->per_sdma[i].kobj_unregister);
+	}
 }
