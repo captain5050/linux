@@ -28,7 +28,8 @@ struct dax_operations {
 	long (*direct_access)(struct dax_device *, pgoff_t, long,
 			enum dax_access_mode, void **, unsigned long *);
 	/* zero_page_range: required operation. Zero page range   */
-	int (*zero_page_range)(struct dax_device *, pgoff_t, size_t);
+	int (*zero_page_range)(struct dax_device *, pgoff_t,
+			       size_t) __require_explicit_initialization;
 	/*
 	 * recovery_write: recover a poisoned range by DAX device driver
 	 * capable of clearing poison.
