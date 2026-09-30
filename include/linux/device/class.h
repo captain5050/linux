@@ -48,7 +48,7 @@ struct fwnode_handle;
  * connected or how they work.
  */
 struct class {
-	const char		*name;
+	const char		*name __require_explicit_initialization;
 
 	const struct attribute_group	*const *class_groups;
 	const struct attribute_group	*const *dev_groups;

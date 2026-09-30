@@ -81,7 +81,7 @@ struct fwnode_handle;
  * private data.
  */
 struct bus_type {
-	const char		*name;
+	const char		*name __require_explicit_initialization;
 	const char		*dev_name;
 	const struct attribute_group *const *bus_groups;
 	const struct attribute_group *const *dev_groups;
