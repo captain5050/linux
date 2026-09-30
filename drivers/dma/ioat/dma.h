@@ -113,6 +113,7 @@ struct ioatdma_chan {
 	u64 *completion;
 	struct tasklet_struct cleanup_task;
 	struct kobject kobj;
+	struct completion kobj_unregister;
 
 /* ioat v2 / v3 channel attributes
  * @xfercap_log; log2 of channel max transfer length (for fast division)

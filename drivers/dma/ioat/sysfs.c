@@ -88,12 +88,14 @@ void ioat_kobject_add(struct ioatdma_device *ioat_dma, const struct kobj_type *t
 		struct kobject *parent = &c->dev->device.kobj;
 		int err;
 
+		init_completion(&ioat_chan->kobj_unregister);
 		err = kobject_init_and_add(&ioat_chan->kobj, type,
 					   parent, "quickdata");
 		if (err) {
 			dev_warn(to_dev(ioat_chan),
 				 "sysfs init error (%d), continuing...\n", err);
 			kobject_put(&ioat_chan->kobj);
+			wait_for_completion(&ioat_chan->kobj_unregister);
 			set_bit(IOAT_KOBJ_INIT_FAIL, &ioat_chan->state);
 		}
 	}
@@ -110,6 +112,7 @@ void ioat_kobject_del(struct ioatdma_device *ioat_dma)
 		if (!test_bit(IOAT_KOBJ_INIT_FAIL, &ioat_chan->state)) {
 			kobject_del(&ioat_chan->kobj);
 			kobject_put(&ioat_chan->kobj);
+			wait_for_completion(&ioat_chan->kobj_unregister);
 		}
 	}
 }
@@ -166,7 +169,15 @@ static const struct attribute *const ioat_attrs[] = {
 };
 ATTRIBUTE_GROUPS(ioat);
 
+static void ioat_kobj_release(struct kobject *kobj)
+{
+	struct ioatdma_chan *ioat_chan = container_of(kobj, struct ioatdma_chan, kobj);
+
+	complete(&ioat_chan->kobj_unregister);
+}
+
 const struct kobj_type ioat_ktype = {
+	.release = ioat_kobj_release,
 	.sysfs_ops = &ioat_sysfs_ops,
 	.default_groups = ioat_groups,
 };
