@@ -46,7 +46,7 @@ struct watchdog_governor;
  * functions are optional.
  */
 struct watchdog_ops {
-	struct module *owner;
+	struct module *owner __require_explicit_initialization;
 	/* mandatory operations */
 	int (*start)(struct watchdog_device *) __require_explicit_initialization;
 	/* optional operations */
