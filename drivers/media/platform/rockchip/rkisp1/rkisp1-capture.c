@@ -1503,6 +1503,7 @@ static const struct v4l2_file_operations rkisp1_fops = {
 	.unlocked_ioctl = video_ioctl2,
 	.poll = vb2_fop_poll,
 	.mmap = vb2_fop_mmap,
+	.owner = THIS_MODULE,
 };
 
 static void rkisp1_unregister_capture(struct rkisp1_capture *cap)

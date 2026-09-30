@@ -85,7 +85,8 @@ static const struct v4l2_file_operations rkisp1_stats_fops = {
 	.unlocked_ioctl = video_ioctl2,
 	.poll = vb2_fop_poll,
 	.open = v4l2_fh_open,
-	.release = vb2_fop_release
+	.release = vb2_fop_release,
+	.owner = THIS_MODULE,
 };
 
 static int rkisp1_stats_vb2_queue_setup(struct vb2_queue *vq,

@@ -948,6 +948,7 @@ static const struct v4l2_file_operations imgu_v4l2_fops = {
 	.release = vb2_fop_release,
 	.poll = vb2_fop_poll,
 	.mmap = vb2_fop_mmap,
+	.owner = THIS_MODULE,
 };
 
 /******************** v4l2_ioctl_ops ********************/

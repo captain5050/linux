@@ -502,6 +502,7 @@ static const struct v4l2_file_operations isp_cap_v4l2_fops = {
 	.poll = vb2_fop_poll,
 	.unlocked_ioctl = video_ioctl2,
 	.mmap = vb2_fop_mmap,
+	.owner = THIS_MODULE,
 };
 
 static int c3_isp_cap_link_validate(struct media_link *link)
