@@ -117,6 +117,7 @@ struct acpi_device;
 
 struct acpi_hotplug_profile {
 	struct kobject kobj;
+	struct completion kobj_unregister;
 	int (*scan_dependent)(struct acpi_device *adev);
 	void (*notify_online)(struct acpi_device *adev);
 	bool enabled:1;

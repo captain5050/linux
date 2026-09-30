@@ -971,7 +971,15 @@ static struct attribute *hotplug_profile_attrs[] = {
 };
 ATTRIBUTE_GROUPS(hotplug_profile);
 
+static void acpi_hotplug_profile_release(struct kobject *kobj)
+{
+	struct acpi_hotplug_profile *hotplug = to_acpi_hotplug_profile(kobj);
+
+	complete(&hotplug->kobj_unregister);
+}
+
 static const struct kobj_type acpi_hotplug_profile_ktype = {
+	.release = acpi_hotplug_profile_release,
 	.sysfs_ops = &kobj_sysfs_ops,
 	.default_groups = hotplug_profile_groups,
 };
@@ -984,10 +992,12 @@ void acpi_sysfs_add_hotplug_profile(struct acpi_hotplug_profile *hotplug,
 	if (!hotplug_kobj)
 		goto err_out;
 
+	init_completion(&hotplug->kobj_unregister);
 	error = kobject_init_and_add(&hotplug->kobj,
 		&acpi_hotplug_profile_ktype, hotplug_kobj, "%s", name);
 	if (error) {
 		kobject_put(&hotplug->kobj);
+		wait_for_completion(&hotplug->kobj_unregister);
 		goto err_out;
 	}
 
