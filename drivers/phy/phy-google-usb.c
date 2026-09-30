@@ -159,6 +159,7 @@ static int google_usb2_phy_exit(struct phy *_phy)
 static const struct phy_ops google_usb2_phy_ops = {
 	.init		= google_usb2_phy_init,
 	.exit		= google_usb2_phy_exit,
+	.owner		= THIS_MODULE,
 };
 
 static struct phy *google_usb_phy_xlate(struct device *dev,

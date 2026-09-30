@@ -535,6 +535,7 @@ static const struct phy_ops sun6i_dphy_ops = {
 	.power_off	= sun6i_dphy_power_off,
 	.init		= sun6i_dphy_init,
 	.exit		= sun6i_dphy_exit,
+	.owner		= THIS_MODULE,
 };
 
 static const struct regmap_config sun6i_dphy_regmap_config = {

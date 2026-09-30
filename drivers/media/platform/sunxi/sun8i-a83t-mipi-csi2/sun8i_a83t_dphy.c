@@ -47,6 +47,7 @@ static const struct phy_ops sun8i_a83t_dphy_ops = {
 	.configure	= sun8i_a83t_dphy_configure,
 	.power_on	= sun8i_a83t_dphy_power_on,
 	.power_off	= sun8i_a83t_dphy_power_off,
+	.owner		= THIS_MODULE,
 };
 
 int sun8i_a83t_dphy_register(struct sun8i_a83t_mipi_csi2_device *csi2_dev)

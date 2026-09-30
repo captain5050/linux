@@ -227,6 +227,7 @@ static const struct phy_ops sp_uphy_ops = {
 	.power_on	= sp_uphy_power_on,
 	.power_off	= sp_uphy_power_off,
 	.exit		= sp_uphy_exit,
+	.owner		= THIS_MODULE,
 };
 
 static const struct of_device_id sp_uphy_dt_ids[] = {

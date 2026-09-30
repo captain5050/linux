@@ -182,6 +182,7 @@ static const struct phy_ops eq5_phy_ops = {
 	.power_off	= eq5_phy_power_off,
 	.set_mode	= eq5_phy_set_mode,
 	.validate	= eq5_phy_validate,
+	.owner		= THIS_MODULE,
 };
 
 static struct phy *eq5_phy_xlate(struct device *dev,

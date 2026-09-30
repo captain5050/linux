@@ -232,6 +232,7 @@ static const struct phy_ops cdns_dphy_rx_ops = {
 	.power_off = cdns_dphy_rx_power_off,
 	.configure = cdns_dphy_rx_configure,
 	.validate = cdns_dphy_rx_validate,
+	.owner = THIS_MODULE,
 };
 
 static int cdns_dphy_rx_probe(struct platform_device *pdev)

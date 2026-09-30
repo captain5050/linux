@@ -1330,6 +1330,7 @@ static const struct phy_ops dw_mipi_dsi_dphy_ops = {
 	.power_off	= dw_mipi_dsi_dphy_power_off,
 	.init		= dw_mipi_dsi_dphy_init,
 	.exit		= dw_mipi_dsi_dphy_exit,
+	.owner		= THIS_MODULE,
 };
 
 static int __maybe_unused dw_mipi_dsi_rockchip_resume(struct device *dev)

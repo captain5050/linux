@@ -144,6 +144,7 @@ static const struct phy_ops stf_dphy_ops = {
 	.configure = stf_dphy_configure,
 	.power_on  = stf_dphy_power_on,
 	.power_off = stf_dphy_power_off,
+	.owner     = THIS_MODULE,
 };
 
 static int stf_dphy_probe(struct platform_device *pdev)

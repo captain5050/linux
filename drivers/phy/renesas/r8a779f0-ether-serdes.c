@@ -404,6 +404,7 @@ static const struct phy_ops r8a779f0_eth_serdes_ops = {
 	.power_on	= r8a779f0_eth_serdes_power_on,
 	.set_mode	= r8a779f0_eth_serdes_set_mode,
 	.set_speed	= r8a779f0_eth_serdes_set_speed,
+	.owner		= THIS_MODULE,
 };
 
 static struct phy *r8a779f0_eth_serdes_xlate(struct device *dev,

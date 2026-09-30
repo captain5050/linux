@@ -50,6 +50,7 @@ static int ipq4019_ss_phy_power_on(struct phy *_phy)
 static const struct phy_ops ipq4019_usb_ss_phy_ops = {
 	.power_on	= ipq4019_ss_phy_power_on,
 	.power_off	= ipq4019_ss_phy_power_off,
+	.owner		= THIS_MODULE,
 };
 
 static int ipq4019_hs_phy_power_off(struct phy *_phy)
@@ -82,6 +83,7 @@ static int ipq4019_hs_phy_power_on(struct phy *_phy)
 static const struct phy_ops ipq4019_usb_hs_phy_ops = {
 	.power_on	= ipq4019_hs_phy_power_on,
 	.power_off	= ipq4019_hs_phy_power_off,
+	.owner		= THIS_MODULE,
 };
 
 static const struct of_device_id ipq4019_usb_phy_of_match[] = {
