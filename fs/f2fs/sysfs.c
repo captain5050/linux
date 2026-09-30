@@ -1651,8 +1651,28 @@ static const struct kobj_type f2fs_sb_ktype = {
 	.release	= f2fs_sb_release,
 };
 
+static DECLARE_COMPLETION(f2fs_kset_unregister);
+static DECLARE_COMPLETION(f2fs_feat_unregister);
+static DECLARE_COMPLETION(f2fs_tune_unregister);
+
+static void f2fs_kset_release(struct kobject *kobj)
+{
+	complete(&f2fs_kset_unregister);
+}
+
+static void f2fs_feat_release(struct kobject *kobj)
+{
+	complete(&f2fs_feat_unregister);
+}
+
+static void f2fs_tune_release(struct kobject *kobj)
+{
+	complete(&f2fs_tune_unregister);
+}
+
 static const struct kobj_type f2fs_ktype = {
 	.sysfs_ops	= &f2fs_attr_ops,
+	.release	= f2fs_kset_release,
 };
 
 static struct kset f2fs_kset = {
@@ -1667,6 +1687,7 @@ static const struct sysfs_ops f2fs_feat_attr_ops = {
 static const struct kobj_type f2fs_feat_ktype = {
 	.default_groups = f2fs_feat_groups,
 	.sysfs_ops	= &f2fs_feat_attr_ops,
+	.release	= f2fs_feat_release,
 };
 
 static struct kobject f2fs_feat = {
@@ -1681,6 +1702,7 @@ static const struct sysfs_ops f2fs_tune_attr_ops = {
 static const struct kobj_type f2fs_tune_ktype = {
 	.default_groups = f2fs_tune_groups,
 	.sysfs_ops	= &f2fs_tune_attr_ops,
+	.release	= f2fs_tune_release,
 };
 
 static struct kobject f2fs_tune = {
@@ -2005,12 +2027,12 @@ int __init f2fs_init_sysfs(void)
 	ret = kobject_init_and_add(&f2fs_feat, &f2fs_feat_ktype,
 				   NULL, "features");
 	if (ret)
-		goto unregister_kset;
+		goto put_feat;
 
 	ret = kobject_init_and_add(&f2fs_tune, &f2fs_tune_ktype,
 				   NULL, "tuning");
 	if (ret)
-		goto put_feat;
+		goto put_tune;
 
 	f2fs_proc_root = proc_mkdir("fs/f2fs", NULL);
 	if (!f2fs_proc_root) {
@@ -2022,18 +2044,23 @@ int __init f2fs_init_sysfs(void)
 
 put_tune:
 	kobject_put(&f2fs_tune);
+	wait_for_completion(&f2fs_tune_unregister);
 put_feat:
 	kobject_put(&f2fs_feat);
-unregister_kset:
+	wait_for_completion(&f2fs_feat_unregister);
 	kset_unregister(&f2fs_kset);
+	wait_for_completion(&f2fs_kset_unregister);
 	return ret;
 }
 
 void f2fs_exit_sysfs(void)
 {
 	kobject_put(&f2fs_tune);
+	wait_for_completion(&f2fs_tune_unregister);
 	kobject_put(&f2fs_feat);
+	wait_for_completion(&f2fs_feat_unregister);
 	kset_unregister(&f2fs_kset);
+	wait_for_completion(&f2fs_kset_unregister);
 	remove_proc_entry("fs/f2fs", NULL);
 	f2fs_proc_root = NULL;
 }
