@@ -201,16 +201,18 @@ static inline bool vfio_device_is_noiommu(struct vfio_device *vdev)
  */
 struct vfio_iommu_driver_ops {
 	char		*name;
-	struct module	*owner;
-	void		*(*open)(unsigned long arg);
-	void		(*release)(void *iommu_data);
+	struct module	*owner __require_explicit_initialization;
+	void		*(*open)(unsigned long arg) __require_explicit_initialization;
+	void		(*release)(void *iommu_data) __require_explicit_initialization;
 	long		(*ioctl)(void *iommu_data, unsigned int cmd,
-				 unsigned long arg);
+				 unsigned long arg) __require_explicit_initialization;
 	int		(*attach_group)(void *iommu_data,
 					struct iommu_group *group,
-					enum vfio_group_type);
+					enum vfio_group_type)
+				__require_explicit_initialization;
 	void		(*detach_group)(void *iommu_data,
-					struct iommu_group *group);
+					struct iommu_group *group)
+				__require_explicit_initialization;
 	int		(*pin_pages)(void *iommu_data,
 				     struct iommu_group *group,
 				     dma_addr_t user_iova,
