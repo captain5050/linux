@@ -74,6 +74,7 @@ struct amdgpu_xcp_res_details {
 	u8 num_inst;
 	u8 num_shared;
 	struct kobject kobj;
+	struct completion kobj_unregister;
 };
 
 struct amdgpu_xcp_cfg {
@@ -115,6 +116,7 @@ struct amdgpu_xcp {
 	struct amdgpu_sched	gpu_sched[AMDGPU_HW_IP_NUM][AMDGPU_RING_PRIO_MAX];
 	struct amdgpu_xcp_mgr *xcp_mgr;
 	struct kobject kobj;
+	struct completion kobj_unregister;
 	uint64_t unique_id;
 };
 

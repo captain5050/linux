@@ -788,7 +788,15 @@ static const struct sysfs_ops xcp_cfg_res_sysfs_ops = {
 	.show = xcp_cfg_res_sysfs_attr_show,
 };
 
+static void xcp_cfg_res_sysfs_release(struct kobject *kobj)
+{
+	struct amdgpu_xcp_res_details *xcp_res = to_xcp_res(kobj);
+
+	complete(&xcp_res->kobj_unregister);
+}
+
 static const struct kobj_type xcp_cfg_res_sysfs_ktype = {
+	.release = xcp_cfg_res_sysfs_release,
 	.sysfs_ops = &xcp_cfg_res_sysfs_ops,
 	.default_groups = xcp_cfg_res_sysfs_groups,
 };
@@ -963,12 +971,14 @@ static void amdgpu_xcp_cfg_sysfs_init(struct amdgpu_device *adev)
 	for (i = 0; i < xcp_cfg->num_res; i++) {
 		xcp_res = &xcp_cfg->xcp_res[i];
 		rid = xcp_res->id;
+		init_completion(&xcp_res->kobj_unregister);
 		r = kobject_init_and_add(&xcp_res->kobj,
 					 &xcp_cfg_res_sysfs_ktype,
 					 &xcp_cfg->kobj, "%s",
 					 xcp_res_names[rid]);
 		if (r) {
 			kobject_put(&xcp_res->kobj);
+			wait_for_completion(&xcp_res->kobj_unregister);
 			goto err;
 		}
 	}
@@ -978,7 +988,9 @@ static void amdgpu_xcp_cfg_sysfs_init(struct amdgpu_device *adev)
 err:
 	while (i--) {
 		xcp_res = &xcp_cfg->xcp_res[i];
+		kobject_del(&xcp_res->kobj);
 		kobject_put(&xcp_res->kobj);
+		wait_for_completion(&xcp_res->kobj_unregister);
 	}
 
 	sysfs_remove_file(&xcp_cfg->kobj, &supp_nps_sysfs_mode.attr);
@@ -999,7 +1011,9 @@ static void amdgpu_xcp_cfg_sysfs_fini(struct amdgpu_device *adev)
 	xcp_cfg = adev->xcp_mgr->xcp_cfg;
 	for (i = 0; i < xcp_cfg->num_res; i++) {
 		xcp_res = &xcp_cfg->xcp_res[i];
+		kobject_del(&xcp_res->kobj);
 		kobject_put(&xcp_res->kobj);
+		wait_for_completion(&xcp_res->kobj_unregister);
 	}
 
 	sysfs_remove_file(&xcp_cfg->kobj, &supp_nps_sysfs_mode.attr);
@@ -1052,7 +1066,15 @@ static const struct attribute_group amdgpu_xcp_attrs_group = {
 	.is_visible = amdgpu_xcp_attrs_is_visible
 };
 
+static void xcp_sysfs_release(struct kobject *kobj)
+{
+	struct amdgpu_xcp *xcp = to_xcp(kobj);
+
+	complete(&xcp->kobj_unregister);
+}
+
 static const struct kobj_type xcp_sysfs_ktype = {
+	.release = xcp_sysfs_release,
 	.sysfs_ops = &kobj_sysfs_ops,
 };
 
@@ -1062,10 +1084,12 @@ static void amdgpu_xcp_sysfs_entries_fini(struct amdgpu_xcp_mgr *xcp_mgr, int n)
 
 	for (n--; n >= 0; n--) {
 		xcp = &xcp_mgr->xcp[n];
-		if (!xcp->ddev || !xcp->valid)
+		if (!xcp->ddev || !xcp->valid || !xcp->kobj.state_in_sysfs)
 			continue;
 		sysfs_remove_group(&xcp->kobj, &amdgpu_xcp_attrs_group);
+		kobject_del(&xcp->kobj);
 		kobject_put(&xcp->kobj);
+		wait_for_completion(&xcp->kobj_unregister);
 	}
 }
 
@@ -1079,6 +1103,7 @@ static void amdgpu_xcp_sysfs_entries_init(struct amdgpu_xcp_mgr *xcp_mgr)
 		xcp = &xcp_mgr->xcp[i];
 		if (!xcp->ddev)
 			break;
+		init_completion(&xcp->kobj_unregister);
 		r = kobject_init_and_add(&xcp->kobj, &xcp_sysfs_ktype,
 					 &xcp->ddev->dev->kobj, "xcp");
 		if (r)
@@ -1091,7 +1116,10 @@ static void amdgpu_xcp_sysfs_entries_init(struct amdgpu_xcp_mgr *xcp_mgr)
 
 	return;
 out:
+	kobject_del(&xcp->kobj);
 	kobject_put(&xcp->kobj);
+	wait_for_completion(&xcp->kobj_unregister);
+	amdgpu_xcp_sysfs_entries_fini(xcp_mgr, i);
 }
 
 static void amdgpu_xcp_sysfs_entries_update(struct amdgpu_xcp_mgr *xcp_mgr)
@@ -1102,7 +1130,7 @@ static void amdgpu_xcp_sysfs_entries_update(struct amdgpu_xcp_mgr *xcp_mgr)
 	for (i = 0; i < MAX_XCP; i++) {
 		/* Redirect all IOCTLs to the primary device */
 		xcp = &xcp_mgr->xcp[i];
-		if (!xcp->ddev)
+		if (!xcp->ddev || !xcp->kobj.state_in_sysfs)
 			continue;
 		sysfs_update_group(&xcp->kobj, &amdgpu_xcp_attrs_group);
 	}
