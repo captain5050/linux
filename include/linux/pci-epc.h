@@ -164,7 +164,7 @@ struct pci_epc_ops {
 	int	(*get_aux_resources)(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
 				     struct pci_epc_aux_resource *resources,
 				     int num_resources);
-	struct module *owner;
+	struct module *owner __require_explicit_initialization;
 };
 
 /**
