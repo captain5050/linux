@@ -303,7 +303,16 @@ static const struct sysfs_ops display_sysfs_ops = {
 	.store = display_attr_store,
 };
 
+static void display_kobj_release(struct kobject *kobj)
+{
+	struct omap_dss_device *dssdev =
+		container_of(kobj, struct omap_dss_device, kobj);
+
+	complete(&dssdev->kobj_unregister);
+}
+
 static struct kobj_type display_ktype = {
+	.release = display_kobj_release,
 	.sysfs_ops = &display_sysfs_ops,
 	.default_groups = display_sysfs_groups,
 };
@@ -314,6 +323,7 @@ int display_init_sysfs(struct platform_device *pdev)
 	int r;
 
 	for_each_dss_dev(dssdev) {
+		init_completion(&dssdev->kobj_unregister);
 		r = kobject_init_and_add(&dssdev->kobj, &display_ktype,
 			&pdev->dev.kobj, "%s", dssdev->alias);
 		if (r) {
@@ -341,6 +351,7 @@ void display_uninit_sysfs(struct platform_device *pdev)
 
 		kobject_del(&dssdev->kobj);
 		kobject_put(&dssdev->kobj);
+		wait_for_completion(&dssdev->kobj_unregister);
 
 		memset(&dssdev->kobj, 0, sizeof(dssdev->kobj));
 	}

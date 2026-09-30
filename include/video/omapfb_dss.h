@@ -7,6 +7,7 @@
 #define __OMAPFB_DSS_H
 
 #include <linux/list.h>
+#include <linux/completion.h>
 #include <linux/kobject.h>
 #include <linux/device.h>
 #include <linux/interrupt.h>
@@ -313,6 +314,7 @@ struct omap_overlay_info {
 
 struct omap_overlay {
 	struct kobject kobj;
+	struct completion kobj_unregister;
 	struct list_head list;
 
 	/* static fields */
@@ -368,6 +370,7 @@ struct omap_overlay_manager_info {
 
 struct omap_overlay_manager {
 	struct kobject kobj;
+	struct completion kobj_unregister;
 
 	/* static fields */
 	const char *name;
@@ -597,6 +600,7 @@ struct omapdss_dsi_ops {
 
 struct omap_dss_device {
 	struct kobject kobj;
+	struct completion kobj_unregister;
 	struct device *dev;
 
 	struct module *owner;

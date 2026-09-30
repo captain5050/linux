@@ -428,7 +428,16 @@ static const struct sysfs_ops overlay_sysfs_ops = {
 	.store = overlay_attr_store,
 };
 
+static void overlay_kobj_release(struct kobject *kobj)
+{
+	struct omap_overlay *overlay =
+		container_of(kobj, struct omap_overlay, kobj);
+
+	complete(&overlay->kobj_unregister);
+}
+
 static struct kobj_type overlay_ktype = {
+	.release = overlay_kobj_release,
 	.sysfs_ops = &overlay_sysfs_ops,
 	.default_groups = overlay_sysfs_groups,
 };
@@ -436,6 +445,7 @@ static struct kobj_type overlay_ktype = {
 int dss_overlay_kobj_init(struct omap_overlay *ovl,
 		struct platform_device *pdev)
 {
+	init_completion(&ovl->kobj_unregister);
 	return kobject_init_and_add(&ovl->kobj, &overlay_ktype,
 			&pdev->dev.kobj, "overlay%d", ovl->id);
 }
@@ -444,4 +454,5 @@ void dss_overlay_kobj_uninit(struct omap_overlay *ovl)
 {
 	kobject_del(&ovl->kobj);
 	kobject_put(&ovl->kobj);
+	wait_for_completion(&ovl->kobj_unregister);
 }

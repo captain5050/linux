@@ -495,7 +495,16 @@ static const struct sysfs_ops manager_sysfs_ops = {
 	.store = manager_attr_store,
 };
 
+static void manager_kobj_release(struct kobject *kobj)
+{
+	struct omap_overlay_manager *manager =
+		container_of(kobj, struct omap_overlay_manager, kobj);
+
+	complete(&manager->kobj_unregister);
+}
+
 static struct kobj_type manager_ktype = {
+	.release = manager_kobj_release,
 	.sysfs_ops = &manager_sysfs_ops,
 	.default_groups = manager_sysfs_groups,
 };
@@ -503,6 +512,7 @@ static struct kobj_type manager_ktype = {
 int dss_manager_kobj_init(struct omap_overlay_manager *mgr,
 		struct platform_device *pdev)
 {
+	init_completion(&mgr->kobj_unregister);
 	return kobject_init_and_add(&mgr->kobj, &manager_ktype,
 			&pdev->dev.kobj, "manager%d", mgr->id);
 }
@@ -511,6 +521,7 @@ void dss_manager_kobj_uninit(struct omap_overlay_manager *mgr)
 {
 	kobject_del(&mgr->kobj);
 	kobject_put(&mgr->kobj);
+	wait_for_completion(&mgr->kobj_unregister);
 
 	memset(&mgr->kobj, 0, sizeof(mgr->kobj));
 }
