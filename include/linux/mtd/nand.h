@@ -226,9 +226,12 @@ struct nand_bbt {
  * NAND layers (SPI NAND, raw NAND, ...).
  */
 struct nand_ops {
-	int (*erase)(struct nand_device *nand, const struct nand_pos *pos);
-	int (*markbad)(struct nand_device *nand, const struct nand_pos *pos);
-	bool (*isbad)(struct nand_device *nand, const struct nand_pos *pos);
+	int (*erase)(struct nand_device *nand,
+		     const struct nand_pos *pos) __require_explicit_initialization;
+	int (*markbad)(struct nand_device *nand,
+		       const struct nand_pos *pos) __require_explicit_initialization;
+	bool (*isbad)(struct nand_device *nand,
+		      const struct nand_pos *pos) __require_explicit_initialization;
 };
 
 /**
