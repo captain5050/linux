@@ -97,7 +97,7 @@ struct thermal_zone_device_ops {
 			     const struct thermal_trip *,
 			     struct thermal_cooling_device *,
 			     struct cooling_spec *);
-	int (*get_temp) (struct thermal_zone_device *, int *);
+	int (*get_temp)(struct thermal_zone_device *, int *) __require_explicit_initialization;
 	int (*set_trips) (struct thermal_zone_device *, int, int);
 	int (*change_mode) (struct thermal_zone_device *,
 		enum thermal_device_mode);
@@ -112,9 +112,12 @@ struct thermal_zone_device_ops {
 };
 
 struct thermal_cooling_device_ops {
-	int (*get_max_state) (struct thermal_cooling_device *, unsigned long *);
-	int (*get_cur_state) (struct thermal_cooling_device *, unsigned long *);
-	int (*set_cur_state) (struct thermal_cooling_device *, unsigned long);
+	int (*get_max_state)(struct thermal_cooling_device *,
+			     unsigned long *) __require_explicit_initialization;
+	int (*get_cur_state)(struct thermal_cooling_device *,
+			     unsigned long *) __require_explicit_initialization;
+	int (*set_cur_state)(struct thermal_cooling_device *,
+			     unsigned long) __require_explicit_initialization;
 	int (*get_requested_power)(struct thermal_cooling_device *, u32 *);
 	int (*state2power)(struct thermal_cooling_device *, unsigned long, u32 *);
 	int (*power2state)(struct thermal_cooling_device *, u32, unsigned long *);
