@@ -61,7 +61,7 @@ struct rfkill;
 struct rfkill_ops {
 	void	(*poll)(struct rfkill *rfkill, void *data);
 	void	(*query)(struct rfkill *rfkill, void *data);
-	int	(*set_block)(void *data, bool blocked);
+	int	(*set_block)(void *data, bool blocked) __require_explicit_initialization;
 };
 
 #if defined(CONFIG_RFKILL) || defined(CONFIG_RFKILL_MODULE)
