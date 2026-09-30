@@ -147,6 +147,7 @@ static const struct watchdog_info max77620_wdt_info = {
 };
 
 static const struct watchdog_ops max77620_wdt_ops = {
+	.owner		= THIS_MODULE,
 	.start		= max77620_wdt_start,
 	.stop		= max77620_wdt_stop,
 	.ping		= max77620_wdt_ping,

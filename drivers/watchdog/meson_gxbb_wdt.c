@@ -107,6 +107,7 @@ static unsigned int meson_gxbb_wdt_get_timeleft(struct watchdog_device *wdt_dev)
 }
 
 static const struct watchdog_ops meson_gxbb_wdt_ops = {
+	.owner = THIS_MODULE,
 	.start = meson_gxbb_wdt_start,
 	.stop = meson_gxbb_wdt_stop,
 	.ping = meson_gxbb_wdt_ping,

@@ -94,6 +94,7 @@ static const struct watchdog_info bd96801_wdt_info = {
 };
 
 static const struct watchdog_ops bd96801_wdt_ops = {
+	.owner		= THIS_MODULE,
 	.start		= bd96801_wdt_start,
 	.stop		= bd96801_wdt_stop,
 	.ping		= bd96801_wdt_ping,

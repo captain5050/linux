@@ -77,6 +77,7 @@ static int ebc_c384_wdt_set_timeout(struct watchdog_device *wdev, unsigned t)
 }
 
 static const struct watchdog_ops ebc_c384_wdt_ops = {
+	.owner = THIS_MODULE,
 	.start = ebc_c384_wdt_start,
 	.stop = ebc_c384_wdt_stop,
 	.set_timeout = ebc_c384_wdt_set_timeout

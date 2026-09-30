@@ -96,6 +96,7 @@ static const struct watchdog_info smcwd_info = {
 };
 
 static const struct watchdog_ops smcwd_ops = {
+	.owner		= THIS_MODULE,
 	.start		= smcwd_start,
 	.stop		= smcwd_stop,
 	.ping		= smcwd_ping,
@@ -103,6 +104,7 @@ static const struct watchdog_ops smcwd_ops = {
 };
 
 static const struct watchdog_ops smcwd_timeleft_ops = {
+	.owner		= THIS_MODULE,
 	.start		= smcwd_start,
 	.stop		= smcwd_stop,
 	.ping		= smcwd_ping,
