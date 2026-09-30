@@ -648,6 +648,7 @@ static const struct pci_epc_ops cdns_pcie_epc_ops = {
 	.map_msi_irq	= cdns_pcie_ep_map_msi_irq,
 	.start		= cdns_pcie_ep_start,
 	.get_features	= cdns_pcie_ep_get_features,
+	.owner		= THIS_MODULE,
 };
 
 void cdns_pcie_ep_disable(struct cdns_pcie_ep *ep)

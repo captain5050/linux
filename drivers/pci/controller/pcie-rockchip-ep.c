@@ -14,6 +14,7 @@
 #include <linux/iopoll.h>
 #include <linux/kernel.h>
 #include <linux/irq.h>
+#include <linux/module.h>
 #include <linux/of.h>
 #include <linux/pci-epc.h>
 #include <linux/platform_device.h>
@@ -717,6 +718,7 @@ static const struct pci_epc_ops rockchip_pcie_epc_ops = {
 	.start		= rockchip_pcie_ep_start,
 	.stop		= rockchip_pcie_ep_stop,
 	.get_features	= rockchip_pcie_ep_get_features,
+	.owner		= THIS_MODULE,
 };
 
 static int rockchip_pcie_ep_get_resources(struct rockchip_pcie *rockchip,

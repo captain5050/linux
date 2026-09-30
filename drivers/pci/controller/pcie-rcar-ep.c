@@ -7,6 +7,7 @@
  */
 
 #include <linux/delay.h>
+#include <linux/module.h>
 #include <linux/of_address.h>
 #include <linux/of_platform.h>
 #include <linux/pci.h>
@@ -464,6 +465,7 @@ static const struct pci_epc_ops rcar_pcie_epc_ops = {
 	.start		= rcar_pcie_ep_start,
 	.stop		= rcar_pcie_ep_stop,
 	.get_features	= rcar_pcie_ep_get_features,
+	.owner		= THIS_MODULE,
 };
 
 static const struct of_device_id rcar_pcie_ep_of_match[] = {

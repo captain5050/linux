@@ -8,6 +8,7 @@
 
 #include <linux/align.h>
 #include <linux/bitfield.h>
+#include <linux/module.h>
 #include <linux/of.h>
 #include <linux/overflow.h>
 #include <linux/platform_device.h>
@@ -950,6 +951,7 @@ static const struct pci_epc_ops epc_ops = {
 	.get_features		= dw_pcie_ep_get_features,
 	.get_aux_resources_count	= dw_pcie_ep_get_aux_resources_count,
 	.get_aux_resources	= dw_pcie_ep_get_aux_resources,
+	.owner			= THIS_MODULE,
 };
 
 /**
