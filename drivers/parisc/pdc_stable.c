@@ -52,6 +52,7 @@
 #include <linux/device.h>
 #include <linux/errno.h>
 #include <linux/spinlock.h>
+#include <linux/completion.h>
 
 #include <asm/pdc.h>
 #include <asm/page.h>
@@ -91,6 +92,7 @@ struct pdcspath_entry {
 	struct pdc_module_path devpath;	/* device path in parisc representation */
 	struct device *dev;		/* corresponding device */
 	struct kobject kobj;
+	struct completion kobj_unregister;
 };
 
 struct pdcspath_attribute {
@@ -482,8 +484,16 @@ static struct attribute *paths_subsys_attrs[] = {
 };
 ATTRIBUTE_GROUPS(paths_subsys);
 
+static void pdcspath_kobj_release(struct kobject *kobj)
+{
+	struct pdcspath_entry *entry = to_pdcspath_entry(kobj);
+
+	complete(&entry->kobj_unregister);
+}
+
 /* Specific kobject type for our PDC paths */
 static const struct kobj_type ktype_pdcspath = {
+	.release = pdcspath_kobj_release,
 	.sysfs_ops = &pdcspath_attr_ops,
 	.default_groups = paths_subsys_groups,
 };
@@ -1004,11 +1014,13 @@ pdcs_register_pathentries(void)
 		if (err < 0)
 			continue;
 
+		init_completion(&entry->kobj_unregister);
 		entry->kobj.kset = paths_kset;
 		err = kobject_init_and_add(&entry->kobj, &ktype_pdcspath, NULL,
 					   "%s", entry->name);
 		if (err) {
 			kobject_put(&entry->kobj);
+			wait_for_completion(&entry->kobj_unregister);
 			return err;
 		}
 
@@ -1039,10 +1051,16 @@ pdcs_unregister_pathentries(void)
 	struct pdcspath_entry *entry;
 	
 	for (i = 0; (entry = pdcspath_entries[i]); i++) {
+		bool registered = false;
+
 		read_lock(&entry->rw_lock);
 		if (entry->ready >= 2)
-			kobject_put(&entry->kobj);
+			registered = true;
 		read_unlock(&entry->rw_lock);
+		if (registered) {
+			kobject_put(&entry->kobj);
+			wait_for_completion(&entry->kobj_unregister);
+		}
 	}
 }
 
