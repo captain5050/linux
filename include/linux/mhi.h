@@ -523,8 +523,8 @@ struct mhi_result {
 struct mhi_driver {
 	const struct mhi_device_id *id_table;
 	int (*probe)(struct mhi_device *mhi_dev,
-		     const struct mhi_device_id *id);
-	void (*remove)(struct mhi_device *mhi_dev);
+		     const struct mhi_device_id *id) __require_explicit_initialization;
+	void (*remove)(struct mhi_device *mhi_dev) __require_explicit_initialization;
 	void (*ul_xfer_cb)(struct mhi_device *mhi_dev,
 			   struct mhi_result *result);
 	void (*dl_xfer_cb)(struct mhi_device *mhi_dev,

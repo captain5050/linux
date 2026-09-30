@@ -214,12 +214,12 @@ struct mhi_ep_driver {
 	const struct mhi_device_id *id_table;
 	struct device_driver driver;
 	int (*probe)(struct mhi_ep_device *mhi_ep,
-		     const struct mhi_device_id *id);
-	void (*remove)(struct mhi_ep_device *mhi_ep);
+		     const struct mhi_device_id *id) __require_explicit_initialization;
+	void (*remove)(struct mhi_ep_device *mhi_ep) __require_explicit_initialization;
 	void (*ul_xfer_cb)(struct mhi_ep_device *mhi_dev,
-			   struct mhi_result *result);
+			   struct mhi_result *result) __require_explicit_initialization;
 	void (*dl_xfer_cb)(struct mhi_ep_device *mhi_dev,
-			   struct mhi_result *result);
+			   struct mhi_result *result) __require_explicit_initialization;
 };
 
 #define to_mhi_ep_device(dev) container_of(dev, struct mhi_ep_device, dev)
