@@ -169,7 +169,7 @@ struct dma_buf_ops {
 	 * @unmap_dma_buf.
 	 */
 	struct sg_table * (*map_dma_buf)(struct dma_buf_attachment *,
-					 enum dma_data_direction);
+					 enum dma_data_direction) __require_explicit_initialization;
 	/**
 	 * @unmap_dma_buf:
 	 *
@@ -180,7 +180,7 @@ struct dma_buf_ops {
 	 */
 	void (*unmap_dma_buf)(struct dma_buf_attachment *,
 			      struct sg_table *,
-			      enum dma_data_direction);
+			      enum dma_data_direction) __require_explicit_initialization;
 
 	/* TODO: Add try_map_dma_buf version, to return immed with -EBUSY
 	 * if the call would block.
@@ -192,7 +192,7 @@ struct dma_buf_ops {
 	 * Called after the last dma_buf_put to release the &dma_buf, and
 	 * mandatory.
 	 */
-	void (*release)(struct dma_buf *);
+	void (*release)(struct dma_buf *) __require_explicit_initialization;
 
 	/**
 	 * @begin_cpu_access:

@@ -146,7 +146,7 @@ struct dma_fence_ops {
 	 *
 	 * This callback is mandatory.
 	 */
-	const char * (*get_driver_name)(struct dma_fence *fence);
+	const char *(*get_driver_name)(struct dma_fence *fence) __require_explicit_initialization;
 
 	/**
 	 * @get_timeline_name:
@@ -161,7 +161,7 @@ struct dma_fence_ops {
 	 *
 	 * This callback is mandatory.
 	 */
-	const char * (*get_timeline_name)(struct dma_fence *fence);
+	const char *(*get_timeline_name)(struct dma_fence *fence) __require_explicit_initialization;
 
 	/**
 	 * @enable_signaling:
