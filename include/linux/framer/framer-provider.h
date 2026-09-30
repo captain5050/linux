@@ -77,7 +77,7 @@ struct framer_ops {
 	int	(*get_config)(struct framer *framer, struct framer_config *config);
 
 	u32 flags;
-	struct module *owner;
+	struct module *owner __require_explicit_initialization;
 };
 
 /**
