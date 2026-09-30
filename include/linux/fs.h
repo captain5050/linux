@@ -2283,7 +2283,7 @@ int kiocb_modified(struct kiocb *iocb);
 int sync_inode_metadata(struct inode *inode, int wait);
 
 struct file_system_type {
-	const char *name;
+	const char *name __require_explicit_initialization;
 	int fs_flags;
 #define FS_REQUIRES_DEV		1 
 #define FS_BINARY_MOUNTDATA	2
