@@ -73,16 +73,16 @@ struct liveupdate_file_op_args {
  */
 struct liveupdate_file_ops {
 	bool (*can_preserve)(struct liveupdate_file_handler *handler,
-			     struct file *file);
-	int (*preserve)(struct liveupdate_file_op_args *args);
-	void (*unpreserve)(struct liveupdate_file_op_args *args);
+			     struct file *file) __require_explicit_initialization;
+	int (*preserve)(struct liveupdate_file_op_args *args) __require_explicit_initialization;
+	void (*unpreserve)(struct liveupdate_file_op_args *args) __require_explicit_initialization;
 	int (*freeze)(struct liveupdate_file_op_args *args);
 	void (*unfreeze)(struct liveupdate_file_op_args *args);
-	int (*retrieve)(struct liveupdate_file_op_args *args);
+	int (*retrieve)(struct liveupdate_file_op_args *args) __require_explicit_initialization;
 	bool (*can_finish)(struct liveupdate_file_op_args *args);
-	void (*finish)(struct liveupdate_file_op_args *args);
+	void (*finish)(struct liveupdate_file_op_args *args) __require_explicit_initialization;
 	unsigned long (*get_id)(struct file *file);
-	struct module *owner;
+	struct module *owner __require_explicit_initialization;
 };
 
 /**
@@ -155,11 +155,11 @@ struct liveupdate_flb_op_args {
  * uses it, across all sessions.
  */
 struct liveupdate_flb_ops {
-	int (*preserve)(struct liveupdate_flb_op_args *argp);
-	void (*unpreserve)(struct liveupdate_flb_op_args *argp);
-	int (*retrieve)(struct liveupdate_flb_op_args *argp);
-	void (*finish)(struct liveupdate_flb_op_args *argp);
-	struct module *owner;
+	int (*preserve)(struct liveupdate_flb_op_args *argp) __require_explicit_initialization;
+	void (*unpreserve)(struct liveupdate_flb_op_args *argp) __require_explicit_initialization;
+	int (*retrieve)(struct liveupdate_flb_op_args *argp) __require_explicit_initialization;
+	void (*finish)(struct liveupdate_flb_op_args *argp) __require_explicit_initialization;
+	struct module *owner __require_explicit_initialization;
 };
 
 /*
