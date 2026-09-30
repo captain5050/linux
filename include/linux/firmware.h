@@ -69,12 +69,13 @@ struct fw_upload {
  */
 struct fw_upload_ops {
 	enum fw_upload_err (*prepare)(struct fw_upload *fw_upload,
-				      const u8 *data, u32 size);
+				      const u8 *data, u32 size) __require_explicit_initialization;
 	enum fw_upload_err (*write)(struct fw_upload *fw_upload,
 				    const u8 *data, u32 offset,
-				    u32 size, u32 *written);
-	enum fw_upload_err (*poll_complete)(struct fw_upload *fw_upload);
-	void (*cancel)(struct fw_upload *fw_upload);
+				    u32 size, u32 *written) __require_explicit_initialization;
+	enum fw_upload_err (*poll_complete)(struct fw_upload *fw_upload)
+		__require_explicit_initialization;
+	void (*cancel)(struct fw_upload *fw_upload) __require_explicit_initialization;
 	void (*cleanup)(struct fw_upload *fw_upload);
 };
 
