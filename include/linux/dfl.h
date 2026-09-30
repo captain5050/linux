@@ -64,9 +64,9 @@ struct dfl_device {
  */
 struct dfl_driver {
 	struct device_driver drv;
-	const struct dfl_device_id *id_table;
+	const struct dfl_device_id *id_table __require_explicit_initialization;
 
-	int (*probe)(struct dfl_device *dfl_dev);
+	int (*probe)(struct dfl_device *dfl_dev) __require_explicit_initialization;
 	void (*remove)(struct dfl_device *dfl_dev);
 };
 
