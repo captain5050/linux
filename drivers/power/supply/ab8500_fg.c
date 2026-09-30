@@ -234,6 +234,7 @@ struct ab8500_fg {
 	struct delayed_work fg_check_hw_failure_work;
 	struct mutex cc_lock;
 	struct kobject fg_kobject;
+	struct completion fg_kobject_unregister;
 };
 static LIST_HEAD(ab8500_fg_list);
 
@@ -2530,7 +2531,15 @@ static struct attribute *ab8500_fg_attrs[] = {
 };
 ATTRIBUTE_GROUPS(ab8500_fg);
 
+static void ab8500_fg_release(struct kobject *kobj)
+{
+	struct ab8500_fg *di = container_of(kobj, struct ab8500_fg, fg_kobject);
+
+	complete(&di->fg_kobject_unregister);
+}
+
 static const struct kobj_type ab8500_fg_ktype = {
+	.release = ab8500_fg_release,
 	.sysfs_ops = &ab8500_fg_sysfs_ops,
 	.default_groups = ab8500_fg_groups,
 };
@@ -2544,6 +2553,8 @@ static const struct kobj_type ab8500_fg_ktype = {
 static void ab8500_fg_sysfs_exit(struct ab8500_fg *di)
 {
 	kobject_del(&di->fg_kobject);
+	kobject_put(&di->fg_kobject);
+	wait_for_completion(&di->fg_kobject_unregister);
 }
 
 /**
@@ -2557,11 +2568,13 @@ static int ab8500_fg_sysfs_init(struct ab8500_fg *di)
 {
 	int ret = 0;
 
+	init_completion(&di->fg_kobject_unregister);
 	ret = kobject_init_and_add(&di->fg_kobject,
 		&ab8500_fg_ktype,
 		NULL, "battery");
 	if (ret < 0) {
 		kobject_put(&di->fg_kobject);
+		wait_for_completion(&di->fg_kobject_unregister);
 		dev_err(di->dev, "failed to create sysfs entry\n");
 	}
 
