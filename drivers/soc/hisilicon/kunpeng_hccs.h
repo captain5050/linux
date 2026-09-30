@@ -35,6 +35,7 @@ struct hccs_port_info {
 	u8 max_lane_num;
 	bool enable; /* if the port is enabled */
 	struct kobject kobj;
+	struct completion kobj_unregister;
 	bool dir_created;
 	struct hccs_die_info *die; /* point to the die the port is located */
 };
@@ -46,6 +47,7 @@ struct hccs_die_info {
 	u8 max_port_id;
 	struct hccs_port_info *ports;
 	struct kobject kobj;
+	struct completion kobj_unregister;
 	bool dir_created;
 	struct hccs_chip_info *chip; /* point to the chip the die is located */
 };
@@ -55,6 +57,7 @@ struct hccs_chip_info {
 	u8 die_num;
 	struct hccs_die_info *dies;
 	struct kobject kobj;
+	struct completion kobj_unregister;
 	struct hccs_dev *hdev;
 };
 

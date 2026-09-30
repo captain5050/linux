@@ -1037,7 +1037,15 @@ static struct attribute *hccs_port_default_attrs[] = {
 };
 ATTRIBUTE_GROUPS(hccs_port_default);
 
+static void hccs_port_release(struct kobject *kobj)
+{
+	struct hccs_port_info *port = kobj_to_port_info(kobj);
+
+	complete(&port->kobj_unregister);
+}
+
 static const struct kobj_type hccs_port_type = {
+	.release = hccs_port_release,
 	.sysfs_ops = &hccs_comm_ops,
 	.default_groups = hccs_port_default_groups,
 };
@@ -1109,7 +1117,15 @@ static struct attribute *hccs_die_default_attrs[] = {
 };
 ATTRIBUTE_GROUPS(hccs_die_default);
 
+static void hccs_die_release(struct kobject *kobj)
+{
+	struct hccs_die_info *die = kobj_to_die_info(kobj);
+
+	complete(&die->kobj_unregister);
+}
+
 static const struct kobj_type hccs_die_type = {
+	.release = hccs_die_release,
 	.sysfs_ops = &hccs_comm_ops,
 	.default_groups = hccs_die_default_groups,
 };
@@ -1212,7 +1228,15 @@ static struct attribute *hccs_chip_default_attrs[] = {
 };
 ATTRIBUTE_GROUPS(hccs_chip_default);
 
+static void hccs_chip_release(struct kobject *kobj)
+{
+	struct hccs_chip_info *chip = kobj_to_chip_info(kobj);
+
+	complete(&chip->kobj_unregister);
+}
+
 static const struct kobj_type hccs_chip_type = {
+	.release = hccs_chip_release,
 	.sysfs_ops = &hccs_comm_ops,
 	.default_groups = hccs_chip_default_groups,
 };
@@ -1590,11 +1614,14 @@ static void hccs_remove_die_dir(struct hccs_die_info *die)
 
 	for (i = 0; i < die->port_num; i++) {
 		port = &die->ports[i];
-		if (port->dir_created)
+		if (port->dir_created) {
 			kobject_put(&port->kobj);
+			wait_for_completion(&port->kobj_unregister);
+		}
 	}
 
 	kobject_put(&die->kobj);
+	wait_for_completion(&die->kobj_unregister);
 }
 
 static void hccs_remove_chip_dir(struct hccs_chip_info *chip)
@@ -1609,6 +1636,7 @@ static void hccs_remove_chip_dir(struct hccs_chip_info *chip)
 	}
 
 	kobject_put(&chip->kobj);
+	wait_for_completion(&chip->kobj_unregister);
 }
 
 static void hccs_remove_topo_dirs(struct hccs_dev *hdev)
@@ -1626,10 +1654,12 @@ static int hccs_create_hccs_dir(struct hccs_die_info *die,
 {
 	int ret;
 
+	init_completion(&port->kobj_unregister);
 	ret = kobject_init_and_add(&port->kobj, &hccs_port_type,
 				   &die->kobj, "hccs%u", port->port_id);
 	if (ret) {
 		kobject_put(&port->kobj);
+		wait_for_completion(&port->kobj_unregister);
 		return ret;
 	}
 
@@ -1644,10 +1674,12 @@ static int hccs_create_die_dir(struct hccs_dev *hdev,
 	int ret;
 	u16 i;
 
+	init_completion(&die->kobj_unregister);
 	ret = kobject_init_and_add(&die->kobj, &hccs_die_type,
 				   &chip->kobj, "die%u", die->die_id);
 	if (ret) {
 		kobject_put(&die->kobj);
+		wait_for_completion(&die->kobj_unregister);
 		return ret;
 	}
 
@@ -1676,10 +1708,12 @@ static int hccs_create_chip_dir(struct hccs_dev *hdev,
 	int ret;
 	u16 id;
 
+	init_completion(&chip->kobj_unregister);
 	ret = kobject_init_and_add(&chip->kobj, &hccs_chip_type,
 				   &hdev->dev->kobj, "chip%u", chip->chip_id);
 	if (ret) {
 		kobject_put(&chip->kobj);
+		wait_for_completion(&chip->kobj_unregister);
 		return ret;
 	}
 
