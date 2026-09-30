@@ -186,7 +186,7 @@ struct i3c_device;
  */
 struct i3c_driver {
 	struct device_driver driver;
-	int (*probe)(struct i3c_device *dev);
+	int (*probe)(struct i3c_device *dev) __require_explicit_initialization;
 	void (*remove)(struct i3c_device *dev);
 	const struct i3c_device_id *id_table;
 };

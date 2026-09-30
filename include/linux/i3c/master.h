@@ -480,23 +480,23 @@ struct i3c_bus {
  *                      controller.
  */
 struct i3c_master_controller_ops {
-	int (*bus_init)(struct i3c_master_controller *master);
+	int (*bus_init)(struct i3c_master_controller *master) __require_explicit_initialization;
 	void (*bus_cleanup)(struct i3c_master_controller *master);
 	int (*attach_i3c_dev)(struct i3c_dev_desc *dev);
 	int (*reattach_i3c_dev)(struct i3c_dev_desc *dev, u8 old_dyn_addr);
 	void (*detach_i3c_dev)(struct i3c_dev_desc *dev);
-	int (*do_daa)(struct i3c_master_controller *master);
+	int (*do_daa)(struct i3c_master_controller *master) __require_explicit_initialization;
 	bool (*supports_ccc_cmd)(struct i3c_master_controller *master,
 				 const struct i3c_ccc_cmd *cmd);
 	int (*send_ccc_cmd)(struct i3c_master_controller *master,
-			    struct i3c_ccc_cmd *cmd);
+			    struct i3c_ccc_cmd *cmd) __require_explicit_initialization;
 	int (*i3c_xfers)(struct i3c_dev_desc *dev,
 			 struct i3c_xfer *xfers,
-			 int nxfers, enum i3c_xfer_mode mode);
+			 int nxfers, enum i3c_xfer_mode mode) __require_explicit_initialization;
 	int (*attach_i2c_dev)(struct i2c_dev_desc *dev);
 	void (*detach_i2c_dev)(struct i2c_dev_desc *dev);
 	int (*i2c_xfers)(struct i2c_dev_desc *dev,
-			 struct i2c_msg *xfers, int nxfers);
+			 struct i2c_msg *xfers, int nxfers) __require_explicit_initialization;
 	int (*request_ibi)(struct i3c_dev_desc *dev,
 			   const struct i3c_ibi_setup *req);
 	void (*free_ibi)(struct i3c_dev_desc *dev);
