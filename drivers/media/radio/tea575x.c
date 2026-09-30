@@ -463,6 +463,7 @@ static int tea575x_s_ctrl(struct v4l2_ctrl *ctrl)
 }
 
 static const struct v4l2_file_operations tea575x_fops = {
+	.owner		= THIS_MODULE,
 	.unlocked_ioctl	= video_ioctl2,
 	.open           = v4l2_fh_open,
 	.release        = v4l2_fh_release,

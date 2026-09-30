@@ -199,7 +199,7 @@ int v4l2_prio_check(struct v4l2_prio_state *global, enum v4l2_priority local);
  *	extra logic needed by the subsystem.
  */
 struct v4l2_file_operations {
-	struct module *owner;
+	struct module *owner __require_explicit_initialization;
 	ssize_t (*read) (struct file *, char __user *, size_t, loff_t *);
 	ssize_t (*write) (struct file *, const char __user *, size_t, loff_t *);
 	__poll_t (*poll) (struct file *, struct poll_table_struct *);
