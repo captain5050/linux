@@ -181,7 +181,7 @@ static inline void *wwan_netdev_drvpriv(struct net_device *dev)
  */
 struct wwan_ops {
 	unsigned int priv_size;
-	void (*setup)(struct net_device *dev);
+	void (*setup)(struct net_device *dev) __require_explicit_initialization;
 	int (*newlink)(void *ctxt, struct net_device *dev,
 		       u32 if_id, struct netlink_ext_ack *extack);
 	void (*dellink)(void *ctxt, struct net_device *dev,
