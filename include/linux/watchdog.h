@@ -48,7 +48,7 @@ struct watchdog_governor;
 struct watchdog_ops {
 	struct module *owner;
 	/* mandatory operations */
-	int (*start)(struct watchdog_device *);
+	int (*start)(struct watchdog_device *) __require_explicit_initialization;
 	/* optional operations */
 	int (*stop)(struct watchdog_device *);
 	int (*ping)(struct watchdog_device *);
