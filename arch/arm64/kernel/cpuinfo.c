@@ -308,7 +308,17 @@ const struct seq_operations cpuinfo_op = {
 };
 
 
+#define kobj_to_cpuinfo(kobj)	container_of(kobj, struct cpuinfo_arm64, kobj)
+
+static void cpuregs_kobj_release(struct kobject *kobj)
+{
+	struct cpuinfo_arm64 *info = kobj_to_cpuinfo(kobj);
+
+	complete(&info->kobj_unregister);
+}
+
 static const struct kobj_type cpuregs_kobj_type = {
+	.release = cpuregs_kobj_release,
 	.sysfs_ops = &kobj_sysfs_ops,
 };
 
@@ -323,7 +333,6 @@ static const struct kobj_type cpuregs_kobj_type = {
  * registers, we expose them both as 64 bit values to cater for possible
  * future expansion without an ABI break.
  */
-#define kobj_to_cpuinfo(kobj)	container_of(kobj, struct cpuinfo_arm64, kobj)
 #define CPUREGS_ATTR_RO(_name, _field)						\
 	static ssize_t _name##_show(struct kobject *kobj,			\
 			struct kobj_attribute *attr, char *buf)			\
@@ -375,14 +384,28 @@ static int cpuid_cpu_online(unsigned int cpu)
 		rc = -ENODEV;
 		goto out;
 	}
-	rc = kobject_add(&info->kobj, &dev->kobj, "regs");
+	init_completion(&info->kobj_unregister);
+	rc = kobject_init_and_add(&info->kobj, &cpuregs_kobj_type, &dev->kobj,
+				  "regs");
 	if (rc)
-		goto out;
+		goto out_put;
 	rc = sysfs_create_group(&info->kobj, &cpuregs_attr_group);
 	if (rc)
-		kobject_del(&info->kobj);
-	if (system_supports_sme())
+		goto out_del;
+	if (system_supports_sme()) {
 		rc = sysfs_merge_group(&info->kobj, &sme_cpuregs_attr_group);
+		if (rc)
+			goto out_remove_group;
+	}
+	return 0;
+out_remove_group:
+	sysfs_remove_group(&info->kobj, &cpuregs_attr_group);
+out_del:
+	kobject_del(&info->kobj);
+out_put:
+	kobject_put(&info->kobj);
+	wait_for_completion(&info->kobj_unregister);
+	memset(&info->kobj, 0, sizeof(info->kobj));
 out:
 	return rc;
 }
@@ -398,6 +421,9 @@ static int cpuid_cpu_offline(unsigned int cpu)
 	if (info->kobj.parent) {
 		sysfs_remove_group(&info->kobj, &cpuregs_attr_group);
 		kobject_del(&info->kobj);
+		kobject_put(&info->kobj);
+		wait_for_completion(&info->kobj_unregister);
+		memset(&info->kobj, 0, sizeof(info->kobj));
 	}
 
 	return 0;
@@ -405,13 +431,7 @@ static int cpuid_cpu_offline(unsigned int cpu)
 
 static int __init cpuinfo_regs_init(void)
 {
-	int cpu, ret;
-
-	for_each_possible_cpu(cpu) {
-		struct cpuinfo_arm64 *info = &per_cpu(cpu_data, cpu);
-
-		kobject_init(&info->kobj, &cpuregs_kobj_type);
-	}
+	int ret;
 
 	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "arm64/cpuinfo:online",
 				cpuid_cpu_online, cpuid_cpu_offline);

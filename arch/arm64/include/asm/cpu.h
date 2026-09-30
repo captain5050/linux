@@ -6,6 +6,7 @@
 #define __ASM_CPU_H
 
 #include <linux/cpu.h>
+#include <linux/completion.h>
 #include <linux/init.h>
 #include <linux/percpu.h>
 
@@ -39,6 +40,7 @@ struct cpuinfo_32bit {
 
 struct cpuinfo_arm64 {
 	struct kobject	kobj;
+	struct completion kobj_unregister;
 	u64		reg_ctr;
 	u64		reg_cntfrq;
 	u64		reg_dczid;
