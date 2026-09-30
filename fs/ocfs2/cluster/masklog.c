@@ -3,6 +3,7 @@
  * Copyright (C) 2004, 2005 Oracle.  All rights reserved.
  */
 
+#include <linux/completion.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/proc_fs.h>
@@ -144,9 +145,17 @@ static const struct sysfs_ops mlog_attr_ops = {
 	.store = mlog_store,
 };
 
+static DECLARE_COMPLETION(mlog_kset_unregister);
+
+static void mlog_kset_release(struct kobject *kobj)
+{
+	complete(&mlog_kset_unregister);
+}
+
 static struct kobj_type mlog_ktype = {
 	.default_groups = mlog_default_groups,
 	.sysfs_ops      = &mlog_attr_ops,
+	.release        = mlog_kset_release,
 };
 
 static struct kset mlog_kset = {
@@ -163,6 +172,7 @@ int mlog_sys_init(struct kset *o2cb_kset)
 	}
 	mlog_default_attrs[i] = NULL;
 
+	init_completion(&mlog_kset_unregister);
 	kobject_set_name(&mlog_kset.kobj, "logmask");
 	mlog_kset.kobj.kset = o2cb_kset;
 	return kset_register(&mlog_kset);
@@ -171,4 +181,5 @@ int mlog_sys_init(struct kset *o2cb_kset)
 void mlog_sys_shutdown(void)
 {
 	kset_unregister(&mlog_kset);
+	wait_for_completion(&mlog_kset_unregister);
 }
