@@ -29,10 +29,10 @@ struct seq_file {
 };
 
 struct seq_operations {
-	void * (*start) (struct seq_file *m, loff_t *pos);
-	void (*stop) (struct seq_file *m, void *v);
-	void * (*next) (struct seq_file *m, void *v, loff_t *pos);
-	int (*show) (struct seq_file *m, void *v);
+	void * (*start)(struct seq_file *m, loff_t *pos) __require_explicit_initialization;
+	void (*stop)(struct seq_file *m, void *v) __require_explicit_initialization;
+	void * (*next)(struct seq_file *m, void *v, loff_t *pos) __require_explicit_initialization;
+	int (*show)(struct seq_file *m, void *v) __require_explicit_initialization;
 };
 
 #define SEQ_SKIP 1
