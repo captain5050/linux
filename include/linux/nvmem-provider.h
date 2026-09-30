@@ -159,8 +159,8 @@ struct nvmem_layout {
 
 struct nvmem_layout_driver {
 	struct device_driver driver;
-	int (*probe)(struct nvmem_layout *layout);
-	void (*remove)(struct nvmem_layout *layout);
+	int (*probe)(struct nvmem_layout *layout) __require_explicit_initialization;
+	void (*remove)(struct nvmem_layout *layout) __require_explicit_initialization;
 };
 
 #if IS_ENABLED(CONFIG_NVMEM)
