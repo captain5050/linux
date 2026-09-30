@@ -145,7 +145,7 @@ struct rchan_callbacks
 					  struct dentry *parent,
 					  umode_t mode,
 					  struct rchan_buf *buf,
-					  int *is_global);
+					  int *is_global) __require_explicit_initialization;
 
 	/*
 	 * remove_buf_file - remove file representing a relay channel buffer
@@ -159,7 +159,7 @@ struct rchan_callbacks
 	 *
 	 * This callback is mandatory.
 	 */
-	int (*remove_buf_file)(struct dentry *dentry);
+	int (*remove_buf_file)(struct dentry *dentry) __require_explicit_initialization;
 };
 
 /*
