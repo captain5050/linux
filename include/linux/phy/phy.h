@@ -144,7 +144,7 @@ struct phy_ops {
 
 	int	(*notify_phystate)(struct phy *phy, union phy_notify state);
 	void	(*release)(struct phy *phy);
-	struct module *owner;
+	struct module *owner __require_explicit_initialization;
 };
 
 /**
