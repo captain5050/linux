@@ -1596,7 +1596,7 @@ struct block_device_operations {
 	/* returns the length of the identifier or a negative errno: */
 	int (*get_unique_id)(struct gendisk *disk, u8 id[16],
 			enum blk_unique_id id_type);
-	struct module *owner;
+	struct module *owner __require_explicit_initialization;
 	const struct pr_ops *pr_ops;
 
 	/*
