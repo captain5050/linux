@@ -64,8 +64,8 @@ struct module_attribute {
 
 struct module_version_attribute {
 	struct module_attribute mattr;
-	const char *module_name;
-	const char *version;
+	const char *module_name __require_explicit_initialization;
+	const char *version __require_explicit_initialization;
 };
 
 extern ssize_t __modver_version_show(const struct module_attribute *,
