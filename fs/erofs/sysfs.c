@@ -235,9 +235,23 @@ static const struct kobj_type erofs_sb_ktype = {
 	.release	= erofs_sb_release,
 };
 
+static DECLARE_COMPLETION(erofs_root_unregister);
+static DECLARE_COMPLETION(erofs_feat_unregister);
+
+static void erofs_root_release(struct kobject *kobj)
+{
+	complete(&erofs_root_unregister);
+}
+
+static void erofs_feat_release(struct kobject *kobj)
+{
+	complete(&erofs_feat_unregister);
+}
+
 static const struct kobj_type erofs_ktype = {
 	.default_groups = erofs_groups,
 	.sysfs_ops	= &erofs_attr_ops,
+	.release	= erofs_root_release,
 };
 
 static struct kset erofs_root = {
@@ -247,6 +261,7 @@ static struct kset erofs_root = {
 static const struct kobj_type erofs_feat_ktype = {
 	.default_groups = erofs_feat_groups,
 	.sysfs_ops	= &erofs_attr_ops,
+	.release	= erofs_feat_release,
 };
 
 static struct kobject erofs_feat = {
@@ -283,7 +298,9 @@ void erofs_unregister_sysfs(struct super_block *sb)
 void erofs_exit_sysfs(void)
 {
 	kobject_put(&erofs_feat);
+	wait_for_completion(&erofs_feat_unregister);
 	kset_unregister(&erofs_root);
+	wait_for_completion(&erofs_root_unregister);
 }
 
 int __init erofs_init_sysfs(void)
