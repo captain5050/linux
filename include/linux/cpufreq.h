@@ -355,8 +355,9 @@ struct cpufreq_driver {
 	void		*driver_data;
 
 	/* needed by all drivers */
-	int		(*init)(struct cpufreq_policy *policy);
-	int		(*verify)(struct cpufreq_policy_data *policy);
+	int		(*init)(struct cpufreq_policy *policy) __require_explicit_initialization;
+	int		(*verify)(struct cpufreq_policy_data *policy)
+		__require_explicit_initialization;
 
 	/* define one out of two */
 	int		(*setpolicy)(struct cpufreq_policy *policy);
