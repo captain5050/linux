@@ -578,7 +578,8 @@ struct blk_mq_ops {
 	 * @queue_rq: Queue a new request from block IO.
 	 */
 	blk_status_t (*queue_rq)(struct blk_mq_hw_ctx *,
-				 const struct blk_mq_queue_data *);
+				 const struct blk_mq_queue_data *)
+		__require_explicit_initialization;
 
 	/**
 	 * @commit_rqs: If a driver uses bd->last to judge when to submit
