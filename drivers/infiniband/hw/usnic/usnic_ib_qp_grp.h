@@ -63,6 +63,7 @@ struct usnic_ib_qp_grp {
 	spinlock_t				lock;
 
 	struct kobject				kobj;
+	struct completion			kobj_unregister;
 };
 
 struct usnic_ib_qp_grp_flow {

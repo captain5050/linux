@@ -244,7 +244,16 @@ static struct attribute *usnic_ib_qpn_default_attrs[] = {
 };
 ATTRIBUTE_GROUPS(usnic_ib_qpn_default);
 
+static void usnic_ib_qpn_release(struct kobject *kobj)
+{
+	struct usnic_ib_qp_grp *qp_grp;
+
+	qp_grp = container_of(kobj, struct usnic_ib_qp_grp, kobj);
+	complete(&qp_grp->kobj_unregister);
+}
+
 static struct kobj_type usnic_ib_qpn_type = {
+	.release = usnic_ib_qpn_release,
 	.sysfs_ops = &usnic_ib_qpn_sysfs_ops,
 	.default_groups = usnic_ib_qpn_default_groups,
 };
@@ -275,10 +284,13 @@ void usnic_ib_sysfs_qpn_add(struct usnic_ib_qp_grp *qp_grp)
 
 	us_ibdev = qp_grp->vf->pf;
 
+	init_completion(&qp_grp->kobj_unregister);
 	err = kobject_init_and_add(&qp_grp->kobj, &usnic_ib_qpn_type,
 			kobject_get(us_ibdev->qpn_kobj),
 			"%d", qp_grp->grp_id);
 	if (err) {
+		kobject_put(&qp_grp->kobj);
+		wait_for_completion(&qp_grp->kobj_unregister);
 		kobject_put(us_ibdev->qpn_kobj);
 		return;
 	}
@@ -288,8 +300,12 @@ void usnic_ib_sysfs_qpn_remove(struct usnic_ib_qp_grp *qp_grp)
 {
 	struct usnic_ib_dev *us_ibdev;
 
+	if (!qp_grp->kobj.state_in_sysfs)
+		return;
+
 	us_ibdev = qp_grp->vf->pf;
 
 	kobject_put(&qp_grp->kobj);
+	wait_for_completion(&qp_grp->kobj_unregister);
 	kobject_put(us_ibdev->qpn_kobj);
 }
