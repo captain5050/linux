@@ -871,7 +871,7 @@ struct dsa_switch_ops {
 	 */
 	enum dsa_tag_protocol (*get_tag_protocol)(struct dsa_switch *ds,
 						  int port,
-						  enum dsa_tag_protocol mprot);
+						  enum dsa_tag_protocol mprot) __require_explicit_initialization;
 	int	(*change_tag_protocol)(struct dsa_switch *ds,
 				       enum dsa_tag_protocol proto);
 	/*

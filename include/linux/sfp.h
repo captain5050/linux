@@ -563,8 +563,8 @@ struct sfp_module_caps {
  *   been removed.
  */
 struct sfp_upstream_ops {
-	void (*attach)(void *priv, struct sfp_bus *bus);
-	void (*detach)(void *priv, struct sfp_bus *bus);
+	void (*attach)(void *priv, struct sfp_bus *bus) __require_explicit_initialization;
+	void (*detach)(void *priv, struct sfp_bus *bus) __require_explicit_initialization;
 	int (*module_insert)(void *priv, const struct sfp_eeprom_id *id);
 	void (*module_remove)(void *priv);
 	int (*module_start)(void *priv);

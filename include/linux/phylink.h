@@ -209,15 +209,15 @@ struct phylink_mac_ops {
 	int (*mac_prepare)(struct phylink_config *config, unsigned int mode,
 			   phy_interface_t iface);
 	void (*mac_config)(struct phylink_config *config, unsigned int mode,
-			   const struct phylink_link_state *state);
+			   const struct phylink_link_state *state) __require_explicit_initialization;
 	int (*mac_finish)(struct phylink_config *config, unsigned int mode,
 			  phy_interface_t iface);
 	void (*mac_link_down)(struct phylink_config *config, unsigned int mode,
-			      phy_interface_t interface);
+			      phy_interface_t interface) __require_explicit_initialization;
 	void (*mac_link_up)(struct phylink_config *config,
 			    struct phy_device *phy, unsigned int mode,
 			    phy_interface_t interface, int speed, int duplex,
-			    bool tx_pause, bool rx_pause);
+			    bool tx_pause, bool rx_pause) __require_explicit_initialization;
 	void (*mac_disable_tx_lpi)(struct phylink_config *config);
 	int (*mac_enable_tx_lpi)(struct phylink_config *config, u32 timer,
 				 bool tx_clk_stop);
