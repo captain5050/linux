@@ -79,8 +79,8 @@ struct lsm_static_calls_table {
  * Contains the information that identifies the LSM.
  */
 struct lsm_id {
-	const char *name;
-	u64 id;
+	const char *name __require_explicit_initialization;
+	u64 id __require_explicit_initialization;
 };
 
 /*
@@ -93,8 +93,8 @@ struct lsm_id {
  * @lsm: The name of the lsm that owns this hook.
  */
 struct security_hook_list {
-	struct lsm_static_call *scalls;
-	union security_list_options hook;
+	struct lsm_static_call *scalls __require_explicit_initialization;
+	union security_list_options hook __require_explicit_initialization;
 	const struct lsm_id *lsmid;
 } __randomize_layout;
 
@@ -170,12 +170,12 @@ enum lsm_order {
  * @initcall_late_sync: LSM callback for late_initcall_sync() setup, optional
  */
 struct lsm_info {
-	const struct lsm_id *id;
+	const struct lsm_id *id __require_explicit_initialization;
 	enum lsm_order order;
 	unsigned long flags;
 	struct lsm_blob_sizes *blobs;
 	int *enabled;
-	int (*init)(void);
+	int (*init)(void) __require_explicit_initialization;
 	int (*initcall_pure)(void);
 	int (*initcall_early)(void);
 	int (*initcall_core)(void);
