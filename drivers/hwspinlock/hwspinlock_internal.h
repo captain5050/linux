@@ -28,8 +28,8 @@ struct hwspinlock_device;
  *	     invocations of @trylock. may _not_ sleep.
  */
 struct hwspinlock_ops {
-	int (*trylock)(struct hwspinlock *lock);
-	void (*unlock)(struct hwspinlock *lock);
+	int (*trylock)(struct hwspinlock *lock) __require_explicit_initialization;
+	void (*unlock)(struct hwspinlock *lock) __require_explicit_initialization;
 	int (*bust)(struct hwspinlock *lock, unsigned int id);
 	void (*relax)(struct hwspinlock *lock);
 };
