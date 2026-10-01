@@ -146,6 +146,14 @@
 # define __weak			__attribute__((weak))
 #endif
 
+#ifndef __require_explicit_initialization
+# if __has_attribute(__require_explicit_initialization__)
+#  define __require_explicit_initialization __attribute__((__require_explicit_initialization__))
+# else
+#  define __require_explicit_initialization
+# endif
+#endif
+
 #ifndef likely
 # define likely(x)		__builtin_expect(!!(x), 1)
 #endif
