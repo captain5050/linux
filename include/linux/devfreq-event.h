@@ -69,9 +69,9 @@ struct devfreq_event_ops {
 	int (*reset)(struct devfreq_event_dev *edev);
 
 	/* Mandatory functions */
-	int (*set_event)(struct devfreq_event_dev *edev);
+	int (*set_event)(struct devfreq_event_dev *edev) __require_explicit_initialization;
 	int (*get_event)(struct devfreq_event_dev *edev,
-			 struct devfreq_event_data *edata);
+			 struct devfreq_event_data *edata) __require_explicit_initialization;
 };
 
 /**
