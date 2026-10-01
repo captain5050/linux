@@ -204,7 +204,7 @@ struct drm_pagemap_devmem_ops {
 	 * Return: 0 on success, a negative error code on failure.
 	 */
 	int (*populate_devmem_pfn)(struct drm_pagemap_devmem *devmem_allocation,
-				   unsigned long npages, unsigned long *pfn);
+				   unsigned long npages, unsigned long *pfn) __require_explicit_initialization;
 
 	/**
 	 * @copy_to_devmem: Copy to device memory (required for migration)
@@ -223,7 +223,7 @@ struct drm_pagemap_devmem_ops {
 	int (*copy_to_devmem)(struct page **pages,
 			      struct drm_pagemap_addr *pagemap_addr,
 			      unsigned long npages,
-			      struct dma_fence *pre_migrate_fence);
+			      struct dma_fence *pre_migrate_fence) __require_explicit_initialization;
 
 	/**
 	 * @copy_to_ram: Copy to system RAM (required for migration)
@@ -242,7 +242,7 @@ struct drm_pagemap_devmem_ops {
 	int (*copy_to_ram)(struct page **pages,
 			   struct drm_pagemap_addr *pagemap_addr,
 			   unsigned long npages,
-			   struct dma_fence *pre_migrate_fence);
+			   struct dma_fence *pre_migrate_fence) __require_explicit_initialization;
 };
 
 #if IS_ENABLED(CONFIG_ZONE_DEVICE)

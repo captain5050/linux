@@ -74,7 +74,7 @@ struct drm_gpusvm_ops {
 	 */
 	void (*invalidate)(struct drm_gpusvm *gpusvm,
 			   struct drm_gpusvm_notifier *notifier,
-			   const struct mmu_notifier_range *mmu_range);
+			   const struct mmu_notifier_range *mmu_range) __require_explicit_initialization;
 };
 
 /**
