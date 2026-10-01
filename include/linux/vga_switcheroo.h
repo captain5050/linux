@@ -115,11 +115,11 @@ enum vga_switcheroo_client_id {
  */
 struct vga_switcheroo_handler {
 	int (*init)(void);
-	int (*switchto)(enum vga_switcheroo_client_id id);
+	int (*switchto)(enum vga_switcheroo_client_id id) __require_explicit_initialization;
 	int (*switch_ddc)(enum vga_switcheroo_client_id id);
 	int (*power_state)(enum vga_switcheroo_client_id id,
 			   enum vga_switcheroo_state state);
-	enum vga_switcheroo_client_id (*get_client_id)(struct pci_dev *pdev);
+	enum vga_switcheroo_client_id (*get_client_id)(struct pci_dev *pdev) __require_explicit_initialization;
 };
 
 /**
@@ -141,9 +141,9 @@ struct vga_switcheroo_handler {
  * OTOH, @gpu_bound is only for audio clients, and not used for GPU clients.
  */
 struct vga_switcheroo_client_ops {
-	void (*set_gpu_state)(struct pci_dev *dev, enum vga_switcheroo_state);
+	void (*set_gpu_state)(struct pci_dev *dev, enum vga_switcheroo_state) __require_explicit_initialization;
 	void (*reprobe)(struct pci_dev *dev);
-	bool (*can_switch)(struct pci_dev *dev);
+	bool (*can_switch)(struct pci_dev *dev) __require_explicit_initialization;
 	void (*gpu_bound)(struct pci_dev *dev, enum vga_switcheroo_client_id);
 };
 
