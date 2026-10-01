@@ -58,10 +58,10 @@ struct sig_alg {
 		      const void *src, unsigned int slen,
 		      const void *digest, unsigned int dlen);
 	int (*set_pub_key)(struct crypto_sig *tfm,
-			   const void *key, unsigned int keylen);
+			   const void *key, unsigned int keylen) __require_explicit_initialization;
 	int (*set_priv_key)(struct crypto_sig *tfm,
 			    const void *key, unsigned int keylen);
-	unsigned int (*key_size)(struct crypto_sig *tfm);
+	unsigned int (*key_size)(struct crypto_sig *tfm) __require_explicit_initialization;
 	unsigned int (*digest_size)(struct crypto_sig *tfm);
 	unsigned int (*max_size)(struct crypto_sig *tfm);
 	int (*init)(struct crypto_sig *tfm);
