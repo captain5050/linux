@@ -485,7 +485,7 @@ _label:									\
 #define __DEFINE_UNLOCK_GUARD(_name, _type, _unlock, ...)		\
 typedef _type lock_##_name##_t;						\
 typedef struct {							\
-	_type *lock;							\
+	_type *lock __require_explicit_initialization;			\
 	__VA_ARGS__;							\
 } class_##_name##_t;							\
 									\

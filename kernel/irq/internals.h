@@ -200,9 +200,13 @@ __DEFINE_UNLOCK_GUARD(irqdesc_lock, struct irq_desc,
 static inline class_irqdesc_lock_t class_irqdesc_lock_constructor(unsigned int irq, bool bus,
 								  unsigned int check)
 {
-	class_irqdesc_lock_t _t = { .bus = bus, };
-
-	_t.lock = __irq_get_desc_lock(irq, &_t.flags, bus, check);
+	unsigned long flags = 0;
+	struct irq_desc *lock = __irq_get_desc_lock(irq, &flags, bus, check);
+	class_irqdesc_lock_t _t = {
+		.lock = lock,
+		.flags = flags,
+		.bus = bus,
+	};
 
 	return _t;
 }
