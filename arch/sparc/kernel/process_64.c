@@ -304,6 +304,7 @@ static const struct sysrq_key_op sparc_globalreg_op = {
 	.handler	= sysrq_handle_globreg,
 	.help_msg	= "global-regs(y)",
 	.action_msg	= "Show Global CPU Regs",
+	.enable_mask	= SYSRQ_ENABLE_DUMP,
 };
 
 static void __global_pmu_self(int this_cpu)
@@ -379,6 +380,7 @@ static const struct sysrq_key_op sparc_globalpmu_op = {
 	.handler	= sysrq_handle_globpmu,
 	.help_msg	= "global-pmu(x)",
 	.action_msg	= "Show Global PMU Regs",
+	.enable_mask	= SYSRQ_ENABLE_DUMP,
 };
 
 static int __init sparc_sysrq_init(void)
