@@ -23,7 +23,7 @@ struct virtio_dma_buf_ops {
 	struct dma_buf_ops ops;
 	int (*device_attach)(struct dma_buf *dma_buf,
 			     struct dma_buf_attachment *attach);
-	int (*get_uuid)(struct dma_buf *dma_buf, uuid_t *uuid);
+	int (*get_uuid)(struct dma_buf *dma_buf, uuid_t *uuid) __require_explicit_initialization;
 };
 
 int virtio_dma_buf_attach(struct dma_buf *dma_buf,
