@@ -192,9 +192,9 @@ struct ethtool_pse_control_status {
 struct pse_controller_ops {
 	int (*setup_pi_matrix)(struct pse_controller_dev *pcdev);
 	int (*pi_get_admin_state)(struct pse_controller_dev *pcdev, int id,
-				  struct pse_admin_state *admin_state);
+				  struct pse_admin_state *admin_state) __require_explicit_initialization;
 	int (*pi_get_pw_status)(struct pse_controller_dev *pcdev, int id,
-				struct pse_pw_status *pw_status);
+				struct pse_pw_status *pw_status) __require_explicit_initialization;
 	int (*pi_get_ext_state)(struct pse_controller_dev *pcdev, int id,
 				struct pse_ext_state_info *ext_state_info);
 	int (*pi_get_pw_class)(struct pse_controller_dev *pcdev, int id);
