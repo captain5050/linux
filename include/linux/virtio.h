@@ -249,15 +249,15 @@ size_t virtio_max_dma_size(const struct virtio_device *vdev);
  */
 struct virtio_driver {
 	struct device_driver driver;
-	const struct virtio_device_id *id_table;
+	const struct virtio_device_id *id_table __require_explicit_initialization;
 	const unsigned int *feature_table;
 	unsigned int feature_table_size;
 	const unsigned int *feature_table_legacy;
 	unsigned int feature_table_size_legacy;
 	int (*validate)(struct virtio_device *dev);
-	int (*probe)(struct virtio_device *dev);
+	int (*probe)(struct virtio_device *dev) __require_explicit_initialization;
 	void (*scan)(struct virtio_device *dev);
-	void (*remove)(struct virtio_device *dev);
+	void (*remove)(struct virtio_device *dev) __require_explicit_initialization;
 	void (*config_changed)(struct virtio_device *dev);
 	int (*freeze)(struct virtio_device *dev);
 	int (*restore)(struct virtio_device *dev);
