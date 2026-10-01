@@ -92,8 +92,8 @@ enum rsc_handling_status {
 struct rproc_ops {
 	int (*prepare)(struct rproc *rproc);
 	int (*unprepare)(struct rproc *rproc);
-	int (*start)(struct rproc *rproc);
-	int (*stop)(struct rproc *rproc);
+	int (*start)(struct rproc *rproc) __require_explicit_initialization;
+	int (*stop)(struct rproc *rproc) __require_explicit_initialization;
 	int (*attach)(struct rproc *rproc);
 	int (*detach)(struct rproc *rproc);
 	void (*kick)(struct rproc *rproc, int vqid);

@@ -110,7 +110,7 @@ struct rpmsg_endpoint {
 struct rpmsg_driver {
 	struct device_driver drv;
 	const struct rpmsg_device_id *id_table;
-	int (*probe)(struct rpmsg_device *dev);
+	int (*probe)(struct rpmsg_device *dev) __require_explicit_initialization;
 	void (*remove)(struct rpmsg_device *dev);
 	int (*callback)(struct rpmsg_device *, void *, int, void *, u32);
 	int (*flowcontrol)(struct rpmsg_device *, void *, bool);
