@@ -615,7 +615,7 @@ enum {
  *			callbacks when a per device domain is created.
  */
 struct msi_parent_ops {
-	u32		supported_flags;
+	u32		supported_flags __require_explicit_initialization;
 	u32		required_flags;
 	u32		chip_flags;
 	u32		bus_select_token;
@@ -623,7 +623,7 @@ struct msi_parent_ops {
 	const char	*prefix;
 	bool		(*init_dev_msi_info)(struct device *dev, struct irq_domain *domain,
 					     struct irq_domain *msi_parent_domain,
-					     struct msi_domain_info *msi_child_info);
+					     struct msi_domain_info *msi_child_info) __require_explicit_initialization;
 };
 
 bool msi_parent_init_dev_msi_info(struct device *dev, struct irq_domain *domain,
