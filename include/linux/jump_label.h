@@ -349,7 +349,7 @@ DEFINE_LOCK_GUARD_0(jump_label_lock, jump_label_lock(), jump_label_unlock())
  */
 
 struct static_key_true {
-	struct static_key key;
+	struct static_key key __require_explicit_initialization;
 };
 
 struct static_key_false {

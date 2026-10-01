@@ -13,9 +13,9 @@ struct static_key_deferred {
 };
 
 struct static_key_true_deferred {
-	struct static_key_true key;
-	unsigned long timeout;
-	struct delayed_work work;
+	struct static_key_true key __require_explicit_initialization;
+	unsigned long timeout __require_explicit_initialization;
+	struct delayed_work work __require_explicit_initialization;
 };
 
 struct static_key_false_deferred {
@@ -65,7 +65,7 @@ struct static_key_deferred {
 	struct static_key  key;
 };
 struct static_key_true_deferred {
-	struct static_key_true key;
+	struct static_key_true key __require_explicit_initialization;
 };
 struct static_key_false_deferred {
 	struct static_key_false key;
