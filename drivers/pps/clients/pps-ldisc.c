@@ -40,19 +40,19 @@ static int (*alias_n_tty_open)(struct tty_struct *tty);
 
 static int pps_tty_open(struct tty_struct *tty)
 {
-	struct pps_source_info info;
+	struct pps_source_info info = {
+		.owner = THIS_MODULE,
+		.mode = PPS_CAPTUREBOTH |
+			PPS_OFFSETASSERT | PPS_OFFSETCLEAR |
+			PPS_CANWAIT | PPS_TSFMT_TSPEC,
+	};
 	struct tty_driver *drv = tty->driver;
 	int index = tty->index + drv->name_base;
 	struct pps_device *pps;
 	int ret;
 
-	info.owner = THIS_MODULE;
-	info.dev = NULL;
 	snprintf(info.name, PPS_MAX_NAME_LEN, "%s%d", drv->driver_name, index);
 	snprintf(info.path, PPS_MAX_NAME_LEN, "/dev/%s%d", drv->name, index);
-	info.mode = PPS_CAPTUREBOTH | \
-			PPS_OFFSETASSERT | PPS_OFFSETCLEAR | \
-			PPS_CANWAIT | PPS_TSFMT_TSPEC;
 
 	pps = pps_register_source(&info, PPS_CAPTUREBOTH | \
 				PPS_OFFSETASSERT | PPS_OFFSETCLEAR);
