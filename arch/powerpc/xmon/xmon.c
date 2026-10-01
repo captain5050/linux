@@ -3987,6 +3987,7 @@ static const struct sysrq_key_op sysrq_xmon_op = {
 	.handler =	sysrq_handle_xmon,
 	.help_msg =	"xmon(x)",
 	.action_msg =	"Entering xmon",
+	.enable_mask =	0,
 };
 
 static int __init setup_xmon_sysrq(void)

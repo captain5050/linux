@@ -38,6 +38,7 @@ static const struct sysrq_key_op drm_client_sysrq_restore_op = {
 	.handler = drm_client_sysrq_restore_handler,
 	.help_msg = "force-fb(v)",
 	.action_msg = "Restore framebuffer console",
+	.enable_mask = 0,
 };
 
 void drm_client_sysrq_register(struct drm_device *dev)

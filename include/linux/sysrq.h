@@ -15,6 +15,7 @@
 #ifndef _LINUX_SYSRQ_H
 #define _LINUX_SYSRQ_H
 
+#include <linux/compiler_attributes.h>
 #include <linux/errno.h>
 #include <linux/types.h>
 
@@ -30,10 +31,10 @@
 #define SYSRQ_ENABLE_RTNICE	0x0100
 
 struct sysrq_key_op {
-	void (* const handler)(u8);
-	const char * const help_msg;
-	const char * const action_msg;
-	const int enable_mask;
+	void (* const handler)(u8) __require_explicit_initialization;
+	const char * const help_msg __require_explicit_initialization;
+	const char * const action_msg __require_explicit_initialization;
+	const int enable_mask __require_explicit_initialization;
 };
 
 #ifdef CONFIG_MAGIC_SYSRQ
