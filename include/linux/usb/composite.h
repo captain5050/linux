@@ -385,12 +385,12 @@ enum {
  */
 struct usb_composite_driver {
 	const char				*name;
-	const struct usb_device_descriptor	*dev;
+	const struct usb_device_descriptor	*dev __require_explicit_initialization;
 	struct usb_gadget_strings		**strings;
 	enum usb_device_speed			max_speed;
 	unsigned		needs_serial:1;
 
-	int			(*bind)(struct usb_composite_dev *cdev);
+	int			(*bind)(struct usb_composite_dev *cdev) __require_explicit_initialization;
 	int			(*unbind)(struct usb_composite_dev *);
 
 	void			(*disconnect)(struct usb_composite_dev *);
