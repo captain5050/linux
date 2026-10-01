@@ -195,6 +195,7 @@ static const struct sysrq_key_op sysrq_show_timers_op = {
 	.handler	= sysrq_handle_show_timers,
 	.help_msg	= "show-all-timers(q)",
 	.action_msg	= "Show clockevent devices & pending hrtimers (no others)",
+	.enable_mask	= SYSRQ_ENABLE_DUMP,
 };
 
 static void sysrq_handle_mountro(u8 key)
@@ -218,6 +219,7 @@ static const struct sysrq_key_op sysrq_showlocks_op = {
 	.handler	= sysrq_handle_showlocks,
 	.help_msg	= "show-all-locks(d)",
 	.action_msg	= "Show Locks Held",
+	.enable_mask	= SYSRQ_ENABLE_DUMP,
 };
 #else
 #define sysrq_showlocks_op (*(const struct sysrq_key_op *)NULL)
