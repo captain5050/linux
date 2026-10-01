@@ -119,10 +119,10 @@ struct vfio_device_ops {
 	int	(*init)(struct vfio_device *vdev);
 	void	(*release)(struct vfio_device *vdev);
 	int	(*bind_iommufd)(struct vfio_device *vdev,
-				struct iommufd_ctx *ictx, u32 *out_device_id);
-	void	(*unbind_iommufd)(struct vfio_device *vdev);
-	int	(*attach_ioas)(struct vfio_device *vdev, u32 *pt_id);
-	void	(*detach_ioas)(struct vfio_device *vdev);
+				struct iommufd_ctx *ictx, u32 *out_device_id) __require_explicit_initialization;
+	void	(*unbind_iommufd)(struct vfio_device *vdev) __require_explicit_initialization;
+	int	(*attach_ioas)(struct vfio_device *vdev, u32 *pt_id) __require_explicit_initialization;
+	void	(*detach_ioas)(struct vfio_device *vdev) __require_explicit_initialization;
 	int	(*pasid_attach_ioas)(struct vfio_device *vdev, u32 pasid,
 				     u32 *pt_id);
 	void	(*pasid_detach_ioas)(struct vfio_device *vdev, u32 pasid);
@@ -225,11 +225,11 @@ static inline bool vfio_device_cdev_opened(struct vfio_device *device)
 struct vfio_migration_ops {
 	struct file *(*migration_set_state)(
 		struct vfio_device *device,
-		enum vfio_device_mig_state new_state);
+		enum vfio_device_mig_state new_state) __require_explicit_initialization;
 	int (*migration_get_state)(struct vfio_device *device,
-				   enum vfio_device_mig_state *curr_state);
+				   enum vfio_device_mig_state *curr_state) __require_explicit_initialization;
 	int (*migration_get_data_size)(struct vfio_device *device,
-				       unsigned long *stop_copy_length);
+				       unsigned long *stop_copy_length) __require_explicit_initialization;
 };
 
 /**
@@ -249,11 +249,11 @@ struct vfio_migration_ops {
  */
 struct vfio_log_ops {
 	int (*log_start)(struct vfio_device *device,
-		struct rb_root_cached *ranges, u32 nnodes, u64 *page_size);
-	int (*log_stop)(struct vfio_device *device);
+		struct rb_root_cached *ranges, u32 nnodes, u64 *page_size) __require_explicit_initialization;
+	int (*log_stop)(struct vfio_device *device) __require_explicit_initialization;
 	int (*log_read_and_clear)(struct vfio_device *device,
 		unsigned long iova, unsigned long length,
-		struct iova_bitmap *dirty);
+		struct iova_bitmap *dirty) __require_explicit_initialization;
 };
 
 /**
