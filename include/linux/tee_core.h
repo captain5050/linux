@@ -101,12 +101,12 @@ struct tee_device {
 
 struct tee_driver_ops {
 	void (*get_version)(struct tee_device *teedev,
-			    struct tee_ioctl_version_data *vers);
+			    struct tee_ioctl_version_data *vers) __require_explicit_initialization;
 	int (*get_tee_revision)(struct tee_device *teedev,
 				char *buf, size_t len);
-	int (*open)(struct tee_context *ctx);
+	int (*open)(struct tee_context *ctx) __require_explicit_initialization;
 	void (*close_context)(struct tee_context *ctx);
-	void (*release)(struct tee_context *ctx);
+	void (*release)(struct tee_context *ctx) __require_explicit_initialization;
 	int (*open_session)(struct tee_context *ctx,
 			    struct tee_ioctl_open_session_arg *arg,
 			    struct tee_param *param);
