@@ -55,8 +55,8 @@ struct ac97_controller_ops {
 	void (*reset)(struct ac97_controller *adrv);
 	void (*warm_reset)(struct ac97_controller *adrv);
 	int (*write)(struct ac97_controller *adrv, int slot,
-		     unsigned short reg, unsigned short val);
-	int (*read)(struct ac97_controller *adrv, int slot, unsigned short reg);
+		     unsigned short reg, unsigned short val) __require_explicit_initialization;
+	int (*read)(struct ac97_controller *adrv, int slot, unsigned short reg) __require_explicit_initialization;
 };
 
 #if IS_ENABLED(CONFIG_AC97_BUS_NEW)

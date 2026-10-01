@@ -813,10 +813,10 @@ struct sdw_enable_ch {
 struct sdw_master_port_ops {
 	int (*dpn_set_port_params)(struct sdw_bus *bus,
 				   struct sdw_port_params *port_params,
-				   unsigned int bank);
+				   unsigned int bank) __require_explicit_initialization;
 	int (*dpn_set_port_transport_params)(struct sdw_bus *bus,
 					     struct sdw_transport_params *transport_params,
-					     enum sdw_reg_bank bank);
+					     enum sdw_reg_bank bank) __require_explicit_initialization;
 	int (*dpn_port_prep)(struct sdw_bus *bus, struct sdw_prepare_ch *prepare_ch);
 	int (*dpn_port_enable_ch)(struct sdw_bus *bus,
 				  struct sdw_enable_ch *enable_ch, unsigned int bank);
