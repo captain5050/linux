@@ -366,15 +366,15 @@ struct pbe {
  *	platforms which require special recovery actions in that situation.
  */
 struct platform_hibernation_ops {
-	int (*begin)(pm_message_t stage);
-	void (*end)(void);
-	int (*pre_snapshot)(void);
-	void (*finish)(void);
-	int (*prepare)(void);
-	int (*enter)(void);
-	void (*leave)(void);
-	int (*pre_restore)(void);
-	void (*restore_cleanup)(void);
+	int (*begin)(pm_message_t stage) __require_explicit_initialization;
+	void (*end)(void) __require_explicit_initialization;
+	int (*pre_snapshot)(void) __require_explicit_initialization;
+	void (*finish)(void) __require_explicit_initialization;
+	int (*prepare)(void) __require_explicit_initialization;
+	int (*enter)(void) __require_explicit_initialization;
+	void (*leave)(void) __require_explicit_initialization;
+	int (*pre_restore)(void) __require_explicit_initialization;
+	void (*restore_cleanup)(void) __require_explicit_initialization;
 	void (*recover)(void);
 };
 
