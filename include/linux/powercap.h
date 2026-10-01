@@ -173,10 +173,10 @@ struct powercap_zone {
  *  Client drivers should handle mutual exclusion, if required in callbacks.
  */
 struct powercap_zone_constraint_ops {
-	int (*set_power_limit_uw) (struct powercap_zone *, int, u64);
-	int (*get_power_limit_uw) (struct powercap_zone *, int, u64 *);
-	int (*set_time_window_us) (struct powercap_zone *, int, u64);
-	int (*get_time_window_us) (struct powercap_zone *, int, u64 *);
+	int (*set_power_limit_uw) (struct powercap_zone *, int, u64) __require_explicit_initialization;
+	int (*get_power_limit_uw) (struct powercap_zone *, int, u64 *) __require_explicit_initialization;
+	int (*set_time_window_us) (struct powercap_zone *, int, u64) __require_explicit_initialization;
+	int (*get_time_window_us) (struct powercap_zone *, int, u64 *) __require_explicit_initialization;
 	int (*get_max_power_uw) (struct powercap_zone *, int, u64 *);
 	int (*get_min_power_uw) (struct powercap_zone *, int, u64 *);
 	int (*get_max_time_window_us) (struct powercap_zone *, int, u64 *);
