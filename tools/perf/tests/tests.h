@@ -3,6 +3,7 @@
 #define TESTS_H
 
 #include <stdbool.h>
+#include <linux/compiler.h>
 #include "util/debug.h"
 
 enum {
@@ -42,8 +43,8 @@ struct test_case {
 };
 
 struct test_suite {
-	const char *desc;
-	struct test_case *test_cases;
+	const char *desc __require_explicit_initialization;
+	struct test_case *test_cases __require_explicit_initialization;
 	void *priv;
 	int (*setup)(struct test_suite *suite);
 };
@@ -221,8 +222,8 @@ DECLARE_SUITE(vectors_page);
 typedef int (*workload_fnptr)(int argc, const char **argv);
 
 struct test_workload {
-	const char	*name;
-	workload_fnptr	func;
+	const char	*name __require_explicit_initialization;
+	workload_fnptr	func __require_explicit_initialization;
 };
 
 #define DECLARE_WORKLOAD(work) \

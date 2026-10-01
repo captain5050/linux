@@ -43,8 +43,8 @@ static int use_pager = -1;
 static FILE *debug_fp = NULL;
 
 struct cmd_struct {
-	const char *cmd;
-	int (*fn)(int, const char **);
+	const char *cmd __require_explicit_initialization;
+	int (*fn)(int, const char **) __require_explicit_initialization;
 	int option;
 };
 
