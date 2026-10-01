@@ -285,7 +285,7 @@ struct media_request_object_ops {
 	void (*unprepare)(struct media_request_object *object);
 	void (*queue)(struct media_request_object *object);
 	void (*unbind)(struct media_request_object *object);
-	void (*release)(struct media_request_object *object);
+	void (*release)(struct media_request_object *object) __require_explicit_initialization;
 };
 
 /**

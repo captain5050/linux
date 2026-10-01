@@ -40,7 +40,7 @@
  *		until the device enters a state when it can be stopped.
  */
 struct v4l2_m2m_ops {
-	void (*device_run)(void *priv);
+	void (*device_run)(void *priv) __require_explicit_initialization;
 	int (*job_ready)(void *priv);
 	void (*job_abort)(void *priv);
 };
