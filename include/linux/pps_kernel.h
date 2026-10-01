@@ -23,12 +23,12 @@ struct pps_device;
 struct pps_source_info {
 	char name[PPS_MAX_NAME_LEN];		/* symbolic name */
 	char path[PPS_MAX_NAME_LEN];		/* path of connected device */
-	int mode;				/* PPS allowed mode */
+	int mode __require_explicit_initialization;				/* PPS allowed mode */
 
 	void (*echo)(struct pps_device *pps,
 			int event, void *data);	/* PPS echo function */
 
-	struct module *owner;
+	struct module *owner __require_explicit_initialization;
 	struct device *dev;		/* Parent device for device_create */
 };
 

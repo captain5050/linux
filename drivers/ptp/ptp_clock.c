@@ -424,11 +424,11 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
 
 	/* Register a new PPS source. */
 	if (info->pps) {
-		struct pps_source_info pps;
-		memset(&pps, 0, sizeof(pps));
+		struct pps_source_info pps = {
+			.mode = PTP_PPS_MODE,
+			.owner = info->owner,
+		};
 		snprintf(pps.name, PPS_MAX_NAME_LEN, "ptp%d", index);
-		pps.mode = PTP_PPS_MODE;
-		pps.owner = info->owner;
 		ptp->pps_source = pps_register_source(&pps, PTP_PPS_DEFAULTS);
 		if (IS_ERR(ptp->pps_source)) {
 			err = PTR_ERR(ptp->pps_source);

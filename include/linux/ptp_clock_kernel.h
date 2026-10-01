@@ -190,7 +190,7 @@ struct ptp_system_timestamp {
  */
 
 struct ptp_clock_info {
-	struct module *owner;
+	struct module *owner __require_explicit_initialization;
 	char name[PTP_CLOCK_NAME_LEN];
 	s32 max_adj;
 	int n_alarm;
