@@ -23,7 +23,7 @@ struct mux_control;
  * @set:			Set the state of the given mux controller.
  */
 struct mux_control_ops {
-	int (*set)(struct mux_control *mux, int state);
+	int (*set)(struct mux_control *mux, int state) __require_explicit_initialization;
 };
 
 /**
