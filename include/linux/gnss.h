@@ -28,8 +28,8 @@ enum gnss_type {
 };
 
 struct gnss_operations {
-	int (*open)(struct gnss_device *gdev);
-	void (*close)(struct gnss_device *gdev);
+	int (*open)(struct gnss_device *gdev) __require_explicit_initialization;
+	void (*close)(struct gnss_device *gdev) __require_explicit_initialization;
 	int (*write_raw)(struct gnss_device *gdev, const unsigned char *buf,
 				size_t count);
 };
