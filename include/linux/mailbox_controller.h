@@ -52,7 +52,7 @@ struct mbox_chan;
  *		  has some data to push to the client. False otherwise.
  */
 struct mbox_chan_ops {
-	int (*send_data)(struct mbox_chan *chan, void *data);
+	int (*send_data)(struct mbox_chan *chan, void *data) __require_explicit_initialization;
 	int (*flush)(struct mbox_chan *chan, unsigned long timeout);
 	int (*startup)(struct mbox_chan *chan);
 	void (*shutdown)(struct mbox_chan *chan);
