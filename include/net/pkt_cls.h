@@ -481,15 +481,15 @@ struct tcf_ematch_tree {
  * @link: link to previous/next ematch module (internal use)
  */
 struct tcf_ematch_ops {
-	int			kind;
+	int			kind __require_explicit_initialization;
 	int			datalen;
 	int			(*change)(struct net *net, void *,
 					  int, struct tcf_ematch *);
 	int			(*match)(struct sk_buff *, struct tcf_ematch *,
-					 struct tcf_pkt_info *);
+					 struct tcf_pkt_info *) __require_explicit_initialization;
 	void			(*destroy)(struct tcf_ematch *);
 	int			(*dump)(struct sk_buff *, struct tcf_ematch *);
-	struct module		*owner;
+	struct module		*owner __require_explicit_initialization;
 	struct list_head	link;
 };
 
