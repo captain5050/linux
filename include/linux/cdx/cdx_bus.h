@@ -197,8 +197,8 @@ struct cdx_device {
  */
 struct cdx_driver {
 	struct device_driver driver;
-	const struct cdx_device_id *match_id_table;
-	int (*probe)(struct cdx_device *dev);
+	const struct cdx_device_id *match_id_table __require_explicit_initialization;
+	int (*probe)(struct cdx_device *dev) __require_explicit_initialization;
 	int (*remove)(struct cdx_device *dev);
 	void (*shutdown)(struct cdx_device *dev);
 	void (*reset_prepare)(struct cdx_device *dev);

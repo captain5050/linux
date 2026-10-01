@@ -142,7 +142,7 @@ int devm_spmi_controller_add(struct device *parent, struct spmi_controller *ctrl
  */
 struct spmi_driver {
 	struct device_driver driver;
-	int	(*probe)(struct spmi_device *sdev);
+	int	(*probe)(struct spmi_device *sdev) __require_explicit_initialization;
 	void	(*remove)(struct spmi_device *sdev);
 	void	(*shutdown)(struct spmi_device *sdev);
 };

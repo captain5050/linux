@@ -83,13 +83,13 @@ struct slim_device {
  */
 
 struct slim_driver {
-	int	(*probe)(struct slim_device *sl);
+	int	(*probe)(struct slim_device *sl) __require_explicit_initialization;
 	void	(*remove)(struct slim_device *sl);
 	void	(*shutdown)(struct slim_device *sl);
 	int	(*device_status)(struct slim_device *sl,
 				 enum slim_device_status s);
 	struct device_driver		driver;
-	const struct slim_device_id	*id_table;
+	const struct slim_device_id	*id_table __require_explicit_initialization;
 };
 #define to_slim_driver(d) container_of_const(d, struct slim_driver, driver)
 

@@ -63,12 +63,12 @@ struct mei_cl_device {
 
 struct mei_cl_driver {
 	struct device_driver driver;
-	const char *name;
+	const char *name __require_explicit_initialization;
 
-	const struct mei_cl_device_id *id_table;
+	const struct mei_cl_device_id *id_table __require_explicit_initialization;
 
 	int (*probe)(struct mei_cl_device *cldev,
-		     const struct mei_cl_device_id *id);
+		     const struct mei_cl_device_id *id) __require_explicit_initialization;
 	void (*remove)(struct mei_cl_device *cldev);
 };
 

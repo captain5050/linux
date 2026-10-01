@@ -41,7 +41,7 @@ static inline void *ulpi_get_drvdata(struct ulpi *ulpi)
  */
 struct ulpi_driver {
 	const struct ulpi_device_id *id_table;
-	int (*probe)(struct ulpi *ulpi);
+	int (*probe)(struct ulpi *ulpi) __require_explicit_initialization;
 	void (*remove)(struct ulpi *ulpi);
 	struct device_driver driver;
 };
